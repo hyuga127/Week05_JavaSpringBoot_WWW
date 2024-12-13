@@ -2,6 +2,11 @@ package vn.edu.iuh.fit.week05.frontend.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,8 @@ import vn.edu.iuh.fit.week05.backend.services.SkillService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/company")
@@ -35,14 +42,31 @@ public class CompanyController {
     }
 
     @GetMapping("/home")
-    public String companyHomePage(HttpSession session, Model model) {
+    public String companyHomePage(HttpSession session, Model model, @RequestParam(defaultValue = "0") int page) {
         Company company = (Company) session.getAttribute("user");
+        if (company == null) {
+            throw new IllegalStateException("Company not found in session");
+        }
+
+        // Cấu hình Pageable với kích thước cố định là 5
+        Pageable pageable = PageRequest.of(page, 5); // page = số trang, 5 = số job mỗi trang
+
+        Page<Job> jobPage = jobRepository.findByCompanyId(company.getId(), pageable);
         model.addAttribute("company", company);
+        model.addAttribute("jobPage", jobPage);
 
-        List<Job> jobList = jobRepository.findByCompanyId(company.getId());
-        model.addAttribute("listJob", jobList);
+        // Tạo danh sách số trang
+        int totalPages = jobPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .toList();
+            model.addAttribute("pageNumbers", pageNumbers);
+        } else {
+            model.addAttribute("pageNumbers", List.of(1));
+        }
 
-        return "/company/home";
+        return "company/home";
     }
 
 

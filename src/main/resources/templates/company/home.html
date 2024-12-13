@@ -22,78 +22,102 @@
 </head>
 <body>
 <div class="wrapper">
-<!-- Nhúng header -->
-<header th:replace="~{header :: header}"></header>
+    <!-- Nhúng header -->
+    <header th:replace="~{header :: header}"></header>
 
+    <div class="container-90 mt-4 content">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4">Welcome, <span th:text="${company.name}"></span></h1>
 
-<div class="container-90 mt-4 content">
-    <div class="row">
-        <div class="col-md-8">
-            <h1 class="mb-4">Welcome,  <span th:text="${company.name}"> </span> </h1>
-
-            <p class="lead">
-                Use the options below to manage your job postings and review applications.
-            </p>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <h5 class="card-title">Quick Actions</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <a href="/company/add-job" class="btn btn-primary w-100">Post a New Job</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="/api/company/job-applicants" class="btn btn-secondary w-100">View Job Applicants</a>
-                        </li>
-                    </ul>
+                <p class="lead">
+                    Use the options below to manage your job postings and review applications.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Actions</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="/company/add-job" class="btn btn-primary w-100">Post a New Job</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/api/company/job-applicants" class="btn btn-secondary w-100">View Job Applicants</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr>
+        <hr>
 
-    <div class="row">
-        <div class="col-md-9">
-            <h3>Your Active Job Postings</h3>
-            <table class="table table-striped mt-3">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Job Title</th>
-                    <th>Applications</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="job, iterStart: ${listJob}">
-                    <td th:text="${iterStart.count}">1</td>
-                    <td th:text="${job.name}"></td>
-<!--                    <td th:text="${job.applications.size()}"></td>-->
-                    <td>
-                        <a th:href="@{/api/company/job-applicants/{id}(id=${job.id})}" class="btn btn-info btn-sm">View Applicants</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <h3>Your Active Job Postings</h3>
+                <!-- Danh sách công việc với phân trang -->
+                <table class="table table-striped mt-3">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Job Title</th>
+                        <th>Date Posted</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="job, iterStat : ${jobPage.content}">
+                        <!-- Số thứ tự -->
+                        <td th:text="${jobPage.number * jobPage.size + iterStat.index + 1}"></td>
+                        <!-- Tên công việc -->
+                        <td th:text="${job.name}">Job Title</td>
+                        <!-- Ngày đăng -->
+                        <td >20/11/20/24</td>
+                        <!-- Hành động -->
+                        <td>
+                            <a th:href="@{'/company/edit-job/' + ${job.id}}" class="btn btn-warning btn-sm">Edit</a>
+                            <a th:href="@{'/company/delete-job/' + ${job.id}}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
 
-        <div class="col-md-3">
-            <h3>Insights</h3>
-            <div class="alert alert-info mt-3">
-                <strong>Tip:</strong> Ensure your job descriptions clearly mention required skills to attract the right candidates.
+                    <tr th:if="${jobPage.content.size() == 0}">
+                        <td colspan="4" class="text-center">No job postings found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- Phân trang -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" th:class="${!jobPage.hasPrevious() ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/company/home(page=${jobPage.number - 1})}">Previous</a>
+                        </li>
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}" th:class="${pageNumber == jobPage.number + 1 ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/company/home(page=${pageNumber - 1})}" th:text="${pageNumber}">1</a>
+                        </li>
+                        <li class="page-item" th:class="${!jobPage.hasNext() ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/company/home(page=${jobPage.number + 1})}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <ul>
-                <li>Total Jobs Posted: <strong th:text="${listJob.size()}"></strong></li>
-                <li>Total Applications Received: <strong>45</strong></li>
-            </ul>
+
+            <div class="col-md-3">
+                <h3>Insights</h3>
+                <div class="alert alert-info mt-3">
+                    <strong>Tip:</strong> Ensure your job descriptions clearly mention required skills to attract the right candidates.
+                </div>
+                <ul>
+                    <li>Total Jobs Posted: <strong th:text="${jobPage.totalElements}"></strong></li>
+                    <li>Total Applications Received: <strong>45</strong></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Nhúng footer -->
-<div th:replace="~{footer :: footer}"></div>
+    <!-- Nhúng footer -->
+    <div th:replace="~{footer :: footer}"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

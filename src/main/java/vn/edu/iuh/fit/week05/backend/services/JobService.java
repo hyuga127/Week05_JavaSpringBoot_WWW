@@ -12,10 +12,6 @@ public class JobService {
     @Autowired
     private JobRepository jobRepository;
 
-    public List<Job> getAllJobs() {
-        return jobRepository.findAll();
-    }
-
     public Job getJobById(Long id) {
         return jobRepository.findById(id).orElse(null);
     }
@@ -27,10 +23,4 @@ public class JobService {
     public void deleteJob(Long id) {
         jobRepository.deleteById(id);
     }
-
-    public List<Job> findByCompanyId(Long id) {
-         return jobRepository.findByCompanyId(id);
-    }
-
-
 }

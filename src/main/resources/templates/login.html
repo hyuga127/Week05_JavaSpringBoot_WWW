@@ -8,13 +8,15 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: url('https://source.unsplash.com/random/1920x1080') no-repeat center center fixed;
+            background: url('https://response-technologies.com/wp-content/uploads/2022/07/video-banner.webp') no-repeat center center fixed;
             background-size: cover;
+            font-family: 'Arial', sans-serif;
         }
 
         .card {
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .form-control {
@@ -23,12 +25,34 @@
 
         .btn-primary {
             border-radius: 10px;
+            background-color: #007BFF;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .alert-danger {
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        h2 {
+            font-weight: bold;
         }
     </style>
 </head>
 <body class="bg-light">
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container">
     <div class="card shadow-lg p-4" style="width: 400px;">
         <h2 class="text-center mb-4">Login</h2>
 
