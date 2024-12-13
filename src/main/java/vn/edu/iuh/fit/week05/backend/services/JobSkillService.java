@@ -1,0 +1,21 @@
+package vn.edu.iuh.fit.week05.backend.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.week05.backend.models.JobSkill;
+import vn.edu.iuh.fit.week05.backend.repositories.JobSkillRepository;
+
+@Service
+public class JobSkillService {
+
+    @Autowired
+    private JobSkillRepository jobSkillRepository;
+
+    public JobSkill save(JobSkill jobSkill) {
+        return jobSkillRepository.save(jobSkill);
+    }
+
+    public void delete(JobSkill jobSkill) {
+        jobSkillRepository.delete(jobSkill);
+    }
+}
