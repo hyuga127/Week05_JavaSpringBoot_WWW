@@ -9,19 +9,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.week05.backend.models.*;
 import vn.edu.iuh.fit.week05.backend.repositories.JobRepository;
 import vn.edu.iuh.fit.week05.backend.services.JobService;
 import vn.edu.iuh.fit.week05.backend.services.JobSkillService;
 import vn.edu.iuh.fit.week05.backend.services.SkillService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Controller
@@ -122,25 +117,31 @@ public class CompanyController {
         return "redirect:/company/home"; // Adjust as needed
     }
 
-    @GetMapping("/edit-job")
-    public String editJob(@RequestParam Long jobId, HttpSession session, Model model) {
+    @GetMapping("/edit-job/{jobId}")
+    public String editJob(@PathVariable Long jobId, HttpSession session, Model model) {
         Company company = (Company) session.getAttribute("user");
+
         if (company == null) {
+            model.addAttribute("error", "Bạn cần đăng nhập để chỉnh sửa công việc.");
             return "redirect:/login";
         }
 
-        Job job = jobService.getJobById(jobId);
-        if (job == null || !job.getCompany().getId().equals(company.getId())) {
-            return "redirect:/company/home"; // Không cho phép chỉnh sửa
+        Job job = jobRepository.findByIdAndCompanyId(jobId, company.getId());
+        if (job == null) {
+            model.addAttribute("error", "Không tìm thấy công việc.");
+            return "redirect:/company/home";
         }
 
-        model.addAttribute("job", job);
-        model.addAttribute("availableSkills", skillService.getAllSkills());
+        List<Skill> availableSkills = skillService.getAllSkills();
 
-        return "/company/edit-job";
+        model.addAttribute("job", job);
+        model.addAttribute("availableSkills", availableSkills);
+
+        return "company/edit-job";
     }
 
-    @PostMapping("/edit-job")
+
+    @PostMapping("/update-job")
     public String editJob(@RequestParam Long jobId,
                           @RequestParam String jobName,
                           @RequestParam String jobDescription,
@@ -151,6 +152,8 @@ public class CompanyController {
             return "redirect:/login";
         }
 
+
+
         Job job = jobService.getJobById(jobId);
         if (job == null || !job.getCompany().getId().equals(company.getId())) {
             return "redirect:/company/home";
@@ -159,32 +162,61 @@ public class CompanyController {
         // Cập nhật thông tin công việc
         job.setName(jobName);
         job.setDescription(jobDescription);
-        Job updatedJob = jobService.saveJob(job);
+        jobService.saveJob(job);
 
-        // Xử lý cập nhật các kỹ năng tương tự như ở phương thức thêm job
-//        jobSkillService.deleteSkillsByJobId(jobId); // Xóa các kỹ năng cũ trước
+        // Lấy danh sách các JobSkill hiện có
+        List<JobSkill> existingJobSkills = jobSkillService.findJobSkillByJobId(jobId);
+
+        // Tạo một Map để lưu các JobSkill hiện tại
+        Map<Long, JobSkill> existingJobSkillMap = new HashMap<>();
+        for (JobSkill jobSkill : existingJobSkills) {
+            existingJobSkillMap.put(jobSkill.getSkill().getId(), jobSkill);
+        }
+
+        // Duyệt các skill mới từ dữ liệu gửi lên
+        Set<Long> processedSkillIds = new HashSet<>(); // Lưu lại các skill đã xử lý
         int i = 0;
         while (allParams.containsKey("skills[" + i + "].skill")) {
-            String skillId = allParams.get("skills[" + i + "].skill");
-            String skillLevel = allParams.get("skills[" + i + "].skillLevel");
+            Long skillId = Long.parseLong(allParams.get("skills[" + i + "].skill"));
+            int skillLevelValue = Integer.parseInt(allParams.get("skills[" + i + "].skillLevel"));
             String moreInfos = allParams.get("skills[" + i + "].moreInfos");
 
-            Skill skill = skillService.getSkillById(Long.parseLong(skillId));
-            JobSkill jobSkill = new JobSkill();
+            processedSkillIds.add(skillId); // Đánh dấu skill đã xử lý
 
-            JobSkillId jobSkillId = new JobSkillId(updatedJob.getId(), Long.parseLong(skillId));
-            jobSkill.setId(jobSkillId);
-            jobSkill.setJob(updatedJob);
-            jobSkill.setSkill(skill);
-            jobSkill.setSkillLevel(SkillLevel.fromValue(Integer.parseInt(skillLevel)));
-            jobSkill.setMoreInfos(moreInfos);
+            if (existingJobSkillMap.containsKey(skillId)) {
+                // Cập nhật JobSkill nếu đã tồn tại
+                JobSkill jobSkill = existingJobSkillMap.get(skillId);
+                jobSkill.setSkillLevel(SkillLevel.fromValue(skillLevelValue));
+                jobSkill.setMoreInfos(moreInfos);
+                jobSkillService.save(jobSkill);
+            } else {
+                // Thêm JobSkill mới nếu chưa tồn tại
+                Skill skill = skillService.getSkillById(skillId);
+                JobSkill newJobSkill = new JobSkill();
 
-            jobSkillService.save(jobSkill);
+                JobSkillId jobSkillId = new JobSkillId(jobId, skillId);
+                newJobSkill.setId(jobSkillId);
+                newJobSkill.setJob(job);
+                newJobSkill.setSkill(skill);
+                newJobSkill.setSkillLevel(SkillLevel.fromValue(skillLevelValue));
+                newJobSkill.setMoreInfos(moreInfos);
+
+                jobSkillService.save(newJobSkill);
+            }
             i++;
+        }
+
+        // Xóa các JobSkill không còn trong danh sách mới (những JobSkill không có trong processedSkillIds)
+        for (JobSkill jobSkillToRemove : existingJobSkillMap.values()) {
+            if (!processedSkillIds.contains(jobSkillToRemove.getSkill().getId())) {
+                jobSkillService.delete(jobSkillToRemove);
+            }
         }
 
         return "redirect:/company/home";
     }
+
+
 
 
 
