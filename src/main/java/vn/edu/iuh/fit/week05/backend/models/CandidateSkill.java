@@ -32,4 +32,13 @@ public class CandidateSkill {
     @Column(name = "skill_level", nullable = false)
     private SkillLevel skillLevel;
 
+    public CandidateSkill(CandidateSkillId candidateSkillId, SkillLevel skillLevel, String moreInfos) {
+        this.id = candidateSkillId;
+        this.skillLevel = skillLevel;
+        this.moreInfos = moreInfos;
+    }
+
+    public CandidateSkill(CandidateSkillId candidateSkillId) {
+        this.id = candidateSkillId;
+    }
 }

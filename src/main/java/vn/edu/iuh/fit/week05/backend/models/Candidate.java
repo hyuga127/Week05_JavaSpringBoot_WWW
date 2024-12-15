@@ -42,7 +42,7 @@ public class Candidate implements UserDetails {
     @Column(name = "role", nullable = false)
     private String role = "ROLE_CANDIDATE";
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "address", nullable = false)
     private Address address;
 
@@ -59,6 +59,10 @@ public class Candidate implements UserDetails {
         this.phone = s1;
         this.email = s2;
         this.password = pass;
+    }
+
+    public Candidate(Long candidateId) {
+        this.id = candidateId;
     }
 
     // Implementing UserDetails methods
@@ -97,4 +101,5 @@ public class Candidate implements UserDetails {
     public boolean isEnabled() {
         return true; // Customize based on your logic
     }
+
 }
