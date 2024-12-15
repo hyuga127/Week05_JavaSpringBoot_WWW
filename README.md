@@ -12,6 +12,9 @@ Dự án này được phát triển với mục tiêu sử dụng **Java Spring
 - **Spring Security**: Quản lý xác thực và phân quyền người dùng.
 - **Gradle**: Công cụ quản lý và xây dựng dự án.
 
+# Sơ đồ Class diagram:
+![image](https://github.com/user-attachments/assets/f1dc1603-1e83-4462-8830-a3b97c27e076)
+
 # Giao diện phía company
 ## Giao diện đăng nhập vào hệ thống (có phân quyền bằng spring security)
 ![image](https://github.com/user-attachments/assets/c3a9c10d-e388-48ea-89eb-32c5ff7eb82b)
