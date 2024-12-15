@@ -1,24 +1,43 @@
 <!-- header.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Company Portal</a>
+            <div sec:authorize="hasRole('ROLE_COMPANY')">
+                <a class="navbar-brand" href="/company/home">Admin Portal</a>
+            </div>
+            <!-- Phần dành riêng cho Candidate -->
+            <div sec:authorize="hasRole('ROLE_CANDIDATE')">
+                <a class="navbar-brand" href="/candidate/home">Candidate Portal</a>
+            </div>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
                         <a class="nav-link" href="/api/company/jobs">Post Job</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
                         <a class="nav-link" href="/api/company/job-applicants">View Applicants</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
+                        <a class="nav-link btn btn-danger text-white" href="/logout">Logout</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
+                        <a class="nav-link" href="/api/candidate/matching-jobs">Matching Jobs</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
+                        <a class="nav-link" href="/api/candidate/applications">My Applications</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
+                        <a class="nav-link" href="/api/candidate/suggest-skills">Skill Suggestions</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
                         <a class="nav-link btn btn-danger text-white" href="/logout">Logout</a>
                     </li>
                 </ul>
