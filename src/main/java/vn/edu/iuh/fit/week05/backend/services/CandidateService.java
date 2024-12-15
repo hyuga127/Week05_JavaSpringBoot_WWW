@@ -12,14 +12,22 @@ import vn.edu.iuh.fit.week05.backend.repositories.CandidateRepository;
 @Service
 public class CandidateService {
 
-    @Autowired
-    private CandidateRepository candidateRepository;
+    private final CandidateRepository candidateRepository;
+
+    public CandidateService(CandidateRepository candidateRepository) {
+        this.candidateRepository = candidateRepository;
+    }
 
     public Page<Candidate> findAll(int pageNo, int pageSize, String sortBy, String sortDirection ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         return candidateRepository.findAll(pageable);
     }
+
+    public Candidate findById(Long id) {
+        return candidateRepository.findById(id).orElse(null);
+    }
+
 
 
 }

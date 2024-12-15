@@ -1,111 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candidate Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Candidate Portal</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/api/candidate/matching-jobs">Matching Jobs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/api/candidate/applications">My Applications</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/api/candidate/suggest-skills">Skill Suggestions</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-danger text-white" href="/logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+    <style>
+        .container-90 {
+            width: 90%;
+            margin: 0 auto;
+        }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8">
-            <h1 class="mb-4">Welcome, <span th:text="${candidate.getFullName()}"></span></h1>
-            <p class="lead">
-                Use the options below to explore jobs, track your applications, and improve your skills.
-            </p>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <h5 class="card-title">Quick Actions</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <a href="/api/candidate/matching-jobs" class="btn btn-primary w-100">View Matching Jobs</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="/api/candidate/applications" class="btn btn-secondary w-100">View My Applications</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="/api/candidate/suggest-skills" class="btn btn-info w-100">Skill Suggestions</a>
-                        </li>
-                    </ul>
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <!-- Nhúng header -->
+    <header th:replace="~{header :: header}"></header>
+
+    <div class="container-90 mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4"><span th:text="${greeting}"> </span>, <span th:text="${candidate.getFullName()}"></span></h1>
+                <p class="lead">
+                    Use the options below to explore jobs, track your applications, and improve your skills.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Actions</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="/candidate/edit-information" class="btn btn-primary w-100">Edit Profile</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/candidate/update-skills" class="btn btn-success w-100">Update Skills</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/api/candidate/applications" class="btn btn-secondary w-100">View My
+                                    Applications</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="/api/candidate/suggest-skills" class="btn btn-info w-100">Skill Suggestions</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr>
+        <hr>
 
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Matching Job Listings</h3>
-            <table class="table table-striped mt-3">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Example Row -->
-                <tr>
-                    <td>1</td>
-                    <td>Frontend Developer</td>
-                    <td>Tech Solutions Inc.</td>
-                    <td>
-                        <a href="/api/candidate/apply/1" class="btn btn-success btn-sm">Apply</a>
-                    </td>
-                </tr>
-                <!-- Repeat rows dynamically with backend -->
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col-md-6">
-            <h3>Skill Suggestions</h3>
-            <div class="alert alert-warning mt-3">
-                <strong>Note:</strong> Improving these skills can help you match more jobs.
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Matching Job Listings</h3>
+                <table class="table table-striped mt-3">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Example Row -->
+                    <tr>
+                        <td>1</td>
+                        <td>Frontend Developer</td>
+                        <td>Tech Solutions Inc.</td>
+                        <td>
+                            <a href="/api/candidate/apply/1" class="btn btn-success btn-sm">Apply</a>
+                        </td>
+                    </tr>
+                    <!-- Repeat rows dynamically with backend -->
+                    </tbody>
+                </table>
             </div>
-            <ul>
-                <li>ReactJS - Intermediate</li>
-                <li>Java - Beginner</li>
-                <li>SQL - Intermediate</li>
-            </ul>
+
+            <div class="col-md-6">
+                <h3>Skill Suggestions</h3>
+                <div class="alert alert-warning mt-3">
+                    <strong>Note:</strong> Improving these skills can help you match more jobs.
+                </div>
+                <ul>
+                    <li>ReactJS - Intermediate</li>
+                    <li>Java - Beginner</li>
+                    <li>SQL - Intermediate</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<footer class="bg-dark text-white text-center py-3 mt-5">
-    <p>Candidate Portal &copy; 2024. All rights reserved.</p>
-</footer>
+    <!-- Nhúng footer -->
+    <div th:replace="~{footer :: footer}"></div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

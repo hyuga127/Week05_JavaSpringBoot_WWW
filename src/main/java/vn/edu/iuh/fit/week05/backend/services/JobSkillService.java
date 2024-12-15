@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class JobSkillService {
 
-    @Autowired
-    private JobSkillRepository jobSkillRepository;
+    private final JobSkillRepository jobSkillRepository;
+
+    public JobSkillService(JobSkillRepository jobSkillRepository) {
+        this.jobSkillRepository = jobSkillRepository;
+    }
 
     public void save(JobSkill jobSkill) {
         jobSkillRepository.save(jobSkill);
@@ -28,6 +31,10 @@ public class JobSkillService {
     }
 
     public List<JobSkill> findJobSkillByJobId(Long jobId) {
-        return jobSkillRepository.findJobSkillByJobId(jobId);
+        List<JobSkill> jobSkills = jobSkillRepository.findJobSkillByJobId(jobId);
+        if (jobSkills.isEmpty()) {
+            throw new RuntimeException("No JobSkills found for Job ID: " + jobId);
+        }
+        return jobSkills;
     }
 }
