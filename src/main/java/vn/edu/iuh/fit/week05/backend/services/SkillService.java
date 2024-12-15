@@ -31,5 +31,10 @@ public class SkillService {
         return skillRepository.findById(id).orElse(null);
     }
 
+    public List<Skill> getSuggestedSkills(Long candidateId) {
+        return skillRepository.findSkillNotLearnByCandidate(candidateId);
+
+    }
+
 
 }

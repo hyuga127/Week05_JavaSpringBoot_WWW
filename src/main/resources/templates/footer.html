@@ -1,10 +1,17 @@
 <!-- footer.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <body>
 <div th:fragment="footer">
     <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>Company Portal &copy; 2024. All rights reserved.</p>
+        <div sec:authorize="hasRole('ROLE_COMPANY')">
+            <p>Company Portal &copy; 2024. All rights reserved.</p>
+        </div>
+
+        <div sec:authorize="hasRole('ROLE_CANDIDATE')">
+            <p>Candidate Portal &copy; 2024. All rights reserved.</p>
+        </div>
     </footer>
 </div>
 </body>

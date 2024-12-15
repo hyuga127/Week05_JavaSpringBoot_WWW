@@ -62,7 +62,7 @@
                     <tr>
                         <th>#</th>
                         <th>Job Title</th>
-                        <th>Date Posted</th>
+                        <th>Website Company</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -73,7 +73,7 @@
                         <!-- Tên công việc -->
                         <td th:text="${job.name}">Job Title</td>
                         <!-- Ngày đăng -->
-                        <td >20/11/20/24</td>
+                        <td th:text="${company.webUrl}" ></td>
                         <!-- Hành động -->
                         <td>
                             <a th:href="@{'/company/edit-job/' + ${job.id}}" class="btn btn-warning btn-sm">Edit</a>

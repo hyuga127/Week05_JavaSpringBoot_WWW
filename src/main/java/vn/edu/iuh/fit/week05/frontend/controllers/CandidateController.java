@@ -5,15 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.week05.backend.models.*;
 import vn.edu.iuh.fit.week05.backend.repositories.CandidateRepository;
-import vn.edu.iuh.fit.week05.backend.services.CandidateService;
-import vn.edu.iuh.fit.week05.backend.services.CandidateSkillService;
-import vn.edu.iuh.fit.week05.backend.services.JobSkillService;
-import vn.edu.iuh.fit.week05.backend.services.SkillService;
+import vn.edu.iuh.fit.week05.backend.services.*;
 import vn.edu.iuh.fit.week05.frontend.utils.Greeting;
 
 import java.time.LocalTime;
@@ -28,25 +27,57 @@ public class CandidateController {
 
     private static final Logger log = LoggerFactory.getLogger(CandidateController.class);
     @Autowired
-    private CandidateRepository candidateRepository;
-
-    @Autowired
     private CandidateService candidateService;
     @Autowired
-    private SkillService skillService;
-
+    private JobService jobService;
     @Autowired
     private CandidateSkillService candidateSkillService;
     @Autowired
-    private JobSkillService jobSkillService;
+    private SkillService skillService;
+
 
     @GetMapping("/home")
-    public String candidateHomePage(HttpSession session, Model model) {
+    public String candidateHomePage(
+            HttpSession session,
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        // Lấy thông tin candidate từ session
         Candidate candidate = (Candidate) session.getAttribute("user");
+        if (candidate == null) {
+            return "redirect:/login"; // Nếu không có candidate trong session, chuyển hướng đến trang đăng nhập
+        }
+
+        // Thêm thông tin candidate và lời chào vào model
         model.addAttribute("candidate", candidate);
         model.addAttribute("greeting", Greeting.getGreeting());
+
+        // Sử dụng JobRepository để tìm các công việc khớp với kỹ năng của candidate
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Job> jobPage = jobService.findMatchingJobsByCandidateId(candidate.getId(), pageable);
+
+        // Tạo danh sách số trang
+        int totalPages = jobPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .toList();
+            model.addAttribute("pageNumbers", pageNumbers);
+        } else {
+            model.addAttribute("pageNumbers", List.of(1));
+        }
+
+        // Thêm vào model
+        model.addAttribute("jobPage", jobPage); // Chứa dữ liệu công việc và phân trang
+
         return "/candidate/home";
     }
+
+
+    @Autowired
+    private JobSkillService jobSkillService;
+
 
     @GetMapping("/candidates-paging")
     public String showCandidateListPaging(Model model, @RequestParam("page") Optional<Integer> page,
@@ -108,88 +139,6 @@ public class CandidateController {
 
         return "candidate/update-skills";
     }
-
-//    @PostMapping("/update-skills")
-//    public String updateSkills(@RequestParam Long candidateId, @RequestParam Map<String, String> params) {
-//        // Lấy danh sách kỹ năng hiện tại của candidate
-//        Candidate candidate = candidateService.findById(candidateId);
-//        Set<Long> currentSkillIds = candidate.getCandidateSkills().stream()
-//                .map(s -> s.getId().getSkillId())
-//                .collect(Collectors.toSet());
-//
-//        // Lấy danh sách kỹ năng từ request
-//        Set<Long> updatedSkillIds = params.keySet().stream()
-//                .filter(key -> key.matches("skills\\[\\d+]\\.id"))
-//                .map(key -> Long.valueOf(params.get(key)))
-//                .collect(Collectors.toSet());
-//
-//        // Tìm các kỹ năng cần xóa
-//        Set<Long> skillsToRemove = new HashSet<>(currentSkillIds);
-//        skillsToRemove.removeAll(updatedSkillIds);
-//
-//        // Xóa kỹ năng
-//        for (Long skillId : skillsToRemove) {
-//            candidateSkillService.removeSkillFromCandidate(candidateId, skillId);
-//        }
-//
-//
-//        // Phân loại kỹ năng cũ và mới
-//        Map<Long, Map<String, String>> oldSkills = new HashMap<>();
-//        List<Map<String, String>> newSkills = new ArrayList<>();
-//
-//        for (Map.Entry<String, String> entry : params.entrySet()) {
-//            String key = entry.getKey();
-//            String value = entry.getValue();
-//
-//            if (key.matches("skills\\[\\d+]\\.(id|skillLevel|moreInfos)")) {
-//                // Kỹ năng cũ
-//                Long skillId = Long.valueOf(key.split("\\[")[1].split("]")[0]);
-//                String fieldName = key.split("\\.")[1];
-//
-//                oldSkills.putIfAbsent(skillId, new HashMap<>());
-//                oldSkills.get(skillId).put(fieldName, value);
-//
-//            } else if (key.matches("skills\\[new_\\d+]\\.(id|skillLevel|moreInfos)")) {
-//                // Kỹ năng mới
-//                String newSkillKey = key.split("\\[")[1].split("]")[0];
-//
-//                Map<String, String> newSkillData = newSkills.stream()
-//                        .filter(map -> map.getOrDefault("key", "").equals(newSkillKey))
-//                        .findFirst()
-//                        .orElseGet(() -> {
-//                            Map<String, String> map = new HashMap<>();
-//                            map.put("key", newSkillKey);
-//                            newSkills.add(map);
-//                            return map;
-//                        });
-//
-//                String fieldName = key.split("\\.")[1];
-//                newSkillData.put(fieldName, value);
-//            }
-//        }
-//
-//        // Gọi service để xử lý kỹ năng cũ
-//        for (Map.Entry<Long, Map<String, String>> entry : oldSkills.entrySet()) {
-//            Long skillId = entry.getKey();
-//            Map<String, String> data = entry.getValue();
-//
-//            Integer skillLevel = data.containsKey("skillLevel") ? Integer.valueOf(data.get("skillLevel")) : null;
-//            String moreInfos = data.get("moreInfos");
-//
-//            candidateSkillService.updateSkill(candidateId, skillId, skillLevel, moreInfos); // Gọi service cập nhật kỹ năng cũ
-//        }
-//
-//        // Gọi service để thêm kỹ năng mới
-//        for (Map<String, String> data : newSkills) {
-//            Long skillId = data.containsKey("id") ? Long.valueOf(data.get("id")) : null;
-//            Integer skillLevel = data.containsKey("skillLevel") ? Integer.valueOf(data.get("skillLevel")) : null;
-//            String moreInfos = data.get("moreInfos");
-//
-//            candidateSkillService.addSkillToCandidate(candidateId, skillId, skillLevel, moreInfos); // Gọi service thêm kỹ năng mới
-//        }
-//
-//        return "redirect:/candidate/home";
-//    }
 
     @PostMapping("/update-skills")
     public String updateSkills(@RequestParam Long candidateId, @RequestParam Map<String, String> params) {
@@ -266,6 +215,27 @@ public class CandidateController {
 
         return "redirect:/candidate/home";
     }
+
+    @GetMapping("/suggest-skills")
+    public String getSkillSuggestions(HttpSession session,Model model) {
+        Candidate candidate = (Candidate) session.getAttribute("user");
+        Long candidateId = candidate.getId();
+
+        // Lấy danh sách các kỹ năng mà candidate chưa học
+        List<Skill> suggestedSkills = skillService.getSuggestedSkills(candidateId);
+
+        // Lấy danh sách các công việc liên quan đến từng kỹ năng
+        Map<String, List<Job>> jobsBySkill = new HashMap<>();
+        for (Skill skill : suggestedSkills) {
+            jobsBySkill.put(skill.getSkillName(), jobService.getJobBySkill(skill.getId()));
+        }
+
+        model.addAttribute("suggestedSkills", suggestedSkills);
+        model.addAttribute("jobsBySkill", jobsBySkill);
+
+        return "/candidate/skill-suggestions"; // Trang hiển thị danh sách kỹ năng và công việc
+    }
+
 
 
 
