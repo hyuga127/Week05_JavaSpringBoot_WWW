@@ -196,6 +196,17 @@ public class CandidateController {
         try {
             // Nạp Candidate từ cơ sở dữ liệu
             Candidate candidate = candidateService.findById(candidateId);
+            List<CandidateSkill> canSkillsBefore = candidateSkillService.findCandidateSkillByCandidateId(candidateId);
+
+            for (CandidateSkill canSkill : canSkillsBefore) {
+                System.out.println("Skill id" + canSkill.getId().getSkillId());
+                System.out.println("Skill level" + canSkill.getSkillLevel().getName());
+                System.out.println("More infos" + canSkill.getMoreInfos());
+            }
+
+            // Lấy danh sách kỹ năng hiện tại của candidate
+            List<CandidateSkill> canSkillAfter = new ArrayList<>();
+
             int i = 0;
             while (params.containsKey("skills[" + i + "].id")) {
                 String skillIdStr = params.get("skills[" + i + "].id");
@@ -209,6 +220,12 @@ public class CandidateController {
 
                 Long skillId = Long.parseLong(skillIdStr);
                 SkillLevel skillLevel = SkillLevel.fromValue(Integer.parseInt(skillLevelStr));
+                CandidateSkill candidateAdd = new CandidateSkill();
+                candidateAdd.setId(new CandidateSkillId(skillId, candidateId));
+                candidateAdd.setSkillLevel(skillLevel);
+                candidateAdd.setMoreInfos(moreInfos);
+
+                canSkillAfter.add(candidateAdd);
 
                 // Kiểm tra xem CandidateSkill đã tồn tại chưa
                 CandidateSkillId candidateSkillId = new CandidateSkillId(skillId, candidateId);
@@ -234,6 +251,14 @@ public class CandidateController {
 
                 i++;
             }
+
+            // Xóa các CandidateSkill không còn tồn tại
+            for (CandidateSkill canSkill : canSkillsBefore) {
+                if (canSkillAfter.stream().noneMatch(s -> s.getId().getSkillId().equals(canSkill.getId().getSkillId()))) {
+                    candidateSkillService.delete(canSkill);
+                }
+            }
+
         } catch (Exception e) {
             System.err.println("Error updating skills: " + e.getMessage());
             return "redirect:/error?message=Error updating skills.";

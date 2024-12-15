@@ -15,6 +15,7 @@ import vn.edu.iuh.fit.week05.backend.repositories.JobRepository;
 import vn.edu.iuh.fit.week05.backend.services.JobService;
 import vn.edu.iuh.fit.week05.backend.services.JobSkillService;
 import vn.edu.iuh.fit.week05.backend.services.SkillService;
+import vn.edu.iuh.fit.week05.frontend.utils.Greeting;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -49,6 +50,7 @@ public class CompanyController {
         Page<Job> jobPage = jobRepository.findByCompanyId(company.getId(), pageable);
         model.addAttribute("company", company);
         model.addAttribute("jobPage", jobPage);
+        model.addAttribute("greeting", Greeting.getGreeting());
 
         // Tạo danh sách số trang
         int totalPages = jobPage.getTotalPages();
