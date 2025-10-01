@@ -1,116 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Skill Suggestions</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <head>
+    <title>Skill Suggestions - Candidate Portal</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        .container-90 {
-            width: 90%;
-            margin: 0 auto;
-        }
+      .container-90 {
+        width: 90%;
+        margin: 0 auto;
+      }
 
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .content {
-            flex: 1;
-        }
+      .content {
+        flex: 1;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-<div class="wrapper">
-    <!-- Nhúng header -->
-    <header th:replace="~{header :: header}"></header>
-    <div class="container mt-4 content">
+  <body>
+    <div class="wrapper">
+      <!-- Nhúng header -->
+      <header th:replace="~{header :: header}"></header>
+      <div class="container mt-4 content">
         <h2>Suggested Skills and Related Jobs</h2>
         <table class="table table-bordered">
-            <thead>
+          <thead>
             <tr>
-                <th>Skill</th>
-                <th>Related Jobs</th>
+              <th>Skill</th>
+              <th>Related Jobs</th>
             </tr>
-            </thead>
-            <tbody>
+          </thead>
+          <tbody>
             <!-- Loop through suggested skills -->
             <tr th:each="entry : ${jobsBySkill}">
-                <td th:text="${entry.key}"></td>
-                <td>
-                    <ul>
-                        <li th:each="job : ${entry.value}">
-                            <button type="button" class="btn btn-info btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#jobDetailsModal"
-                                    th:onclick="'viewJobDetails(' + ${job.id} + ')'"
-                                    th:text="${job.name}"></button>
-                        </li>
-                    </ul>
-                </td>
+              <td th:text="${entry.key}"></td>
+              <td>
+                <ul>
+                  <li th:each="job : ${entry.value}">
+                    <button
+                      type="button"
+                      class="btn btn-info btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#jobDetailsModal"
+                      th:onclick="'viewJobDetails(' + ${job.id} + ')'"
+                      th:text="${job.name}"
+                    ></button>
+                  </li>
+                </ul>
+              </td>
             </tr>
-            </tbody>
+          </tbody>
         </table>
 
         <!-- Modal -->
-        <div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Job Title:</strong> <span id="jobTitle"></span></p>
-                        <p><strong>Description:</strong> <span id="jobDescription"></span></p>
-                        <p><strong>Skills Required:</strong></p>
-                        <ul id="jobSkills"></ul> <!-- Sử dụng danh sách để hiển thị skill -->
-                    </div>
-                </div>
+        <div
+          class="modal fade"
+          id="jobDetailsModal"
+          tabindex="-1"
+          aria-labelledby="jobDetailsModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="jobDetailsModalLabel">
+                  Job Details
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p><strong>Job Title:</strong> <span id="jobTitle"></span></p>
+                <p>
+                  <strong>Description:</strong>
+                  <span id="jobDescription"></span>
+                </p>
+                <p><strong>Skills Required:</strong></p>
+                <ul id="jobSkills"></ul>
+                <!-- Sử dụng danh sách để hiển thị skill -->
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+
+      <footer th:replace="~{footer :: footer}"></footer>
     </div>
 
-    <footer th:replace="~{footer :: footer}"></footer>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-<script>
-    function viewJobDetails(jobId) {
+    <script>
+      function viewJobDetails(jobId) {
         fetch(`/api/jobs/${jobId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch job details');
-                }
-                return response.json();
-            })
-            .then(job => {
-                // Hiển thị thông tin trong modal
-                document.getElementById('jobTitle').textContent = job.name;
-                document.getElementById('jobDescription').textContent = job.description;
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch job details");
+            }
+            return response.json();
+          })
+          .then((job) => {
+            // Hiển thị thông tin trong modal
+            document.getElementById("jobTitle").textContent = job.name;
+            document.getElementById("jobDescription").textContent =
+              job.description;
 
-                // Hiển thị danh sách kỹ năng
-                const skillsList = document.getElementById('jobSkills');
-                skillsList.innerHTML = ''; // Xóa nội dung cũ
+            // Hiển thị danh sách kỹ năng
+            const skillsList = document.getElementById("jobSkills");
+            skillsList.innerHTML = ""; // Xóa nội dung cũ
 
-                job.jobSkills.forEach(skill => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
+            job.jobSkills.forEach((skill) => {
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `
                     <strong>${skill.skillName}</strong>
                     (${skill.skillLevel})
                     - ${skill.moreInfors}
                 `;
-                    skillsList.appendChild(listItem);
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to fetch job details. Please try again later.');
+              skillsList.appendChild(listItem);
             });
-    }
-</script>
-</body>
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Failed to fetch job details. Please try again later.");
+          });
+      }
+    </script>
+  </body>
 </html>

@@ -1,93 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Update Candidate Skills</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <head>
+    <title>Update Skills - Candidate Portal</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .content {
-            flex: 1;
-        }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .content {
+        flex: 1;
+      }
     </style>
-</head>
-<body>
-<div class="wrapper">
-    <header th:replace="~{header :: header}"></header>
-<div class="container mt-4 content">
-    <h2>Update Skills for <span th:text="${candidate.fullName}"></span> </h2>
-    <!-- Skills Table -->
-    <form action="/candidate/update-skills" method="post">
-        <input type="hidden" name="candidateId" th:value="${candidate.id}">
-        <table class="table table-bordered">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header th:replace="~{header :: header}"></header>
+      <div class="container mt-4 content">
+        <h2>Update Skills for <span th:text="${candidate.fullName}"></span></h2>
+        <!-- Skills Table -->
+        <form action="/candidate/update-skills" method="post">
+          <input type="hidden" name="candidateId" th:value="${candidate.id}" />
+          <table class="table table-bordered">
             <thead>
-            <tr>
+              <tr>
                 <th>Skill Name</th>
                 <th>Skill Level</th>
                 <th>More Info</th>
                 <th>Actions</th>
-            </tr>
+              </tr>
             </thead>
             <tbody id="skills-table-body">
-            <tr th:each="skill, iterStat : ${skills}">
+              <tr th:each="skill, iterStat : ${skills}">
                 <td>
-                    <select class="form-select" th:name="'skills[' + ${iterStat.index} + '].id'" required>
-                        <option th:each="s : ${availableSkills}"
-                                th:value="${s.id}"
-                                th:selected="${skill.skill.id == s.id}" th:text="${s.skillName}"></option>
-                    </select>
+                  <select
+                    class="form-select"
+                    th:name="'skills[' + ${iterStat.index} + '].id'"
+                    required
+                  >
+                    <option
+                      th:each="s : ${availableSkills}"
+                      th:value="${s.id}"
+                      th:selected="${skill.skill.id == s.id}"
+                      th:text="${s.skillName}"
+                    ></option>
+                  </select>
                 </td>
                 <td>
-                    <select class="form-select" th:name="'skills[' + ${iterStat.index} + '].skillLevel'" required>
-                        <option th:each="level : ${T(vn.edu.iuh.fit.week05.backend.models.SkillLevel).values()}"
-                                th:value="${level.value}"
-                                th:selected="${skill.skillLevel.value == level.value}" th:text="${level.name}"></option>
-                    </select>
+                  <select
+                    class="form-select"
+                    th:name="'skills[' + ${iterStat.index} + '].skillLevel'"
+                    required
+                  >
+                    <option
+                      th:each="level : ${T(vn.edu.iuh.fit.week05.backend.models.SkillLevel).values()}"
+                      th:value="${level.value}"
+                      th:selected="${skill.skillLevel.value == level.value}"
+                      th:text="${level.name}"
+                    ></option>
+                  </select>
                 </td>
                 <td>
-                    <textarea class="form-control" th:name="'skills[' + ${iterStat.index} + '].moreInfos'" th:text="${skill.moreInfos}"></textarea>
+                  <textarea
+                    class="form-control"
+                    th:name="'skills[' + ${iterStat.index} + '].moreInfos'"
+                    th:text="${skill.moreInfos}"
+                  ></textarea>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeSkill(this)">Remove</button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    onclick="removeSkill(this)"
+                  >
+                    Remove
+                  </button>
                 </td>
-            </tr>
-
-
+              </tr>
             </tbody>
-        </table>
+          </table>
 
-        <!-- Add Skill Button -->
-        <button type="button" class="btn btn-primary mb-3" id="add-skill-button">Add Skill</button>
+          <!-- Add Skill Button -->
+          <button
+            type="button"
+            class="btn btn-primary mb-3"
+            id="add-skill-button"
+          >
+            Add Skill
+          </button>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-success">Update Skills</button>
-    </form>
-</div>
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-success">Update Skills</button>
+        </form>
+      </div>
 
-    <footer th:replace="~{footer :: footer}"></footer>
-    <!-- Template lưu danh sách các skill -->
-    <select id="skill-template" class="d-none">
+      <footer th:replace="~{footer :: footer}"></footer>
+      <!-- Template lưu danh sách các skill -->
+      <select id="skill-template" class="d-none">
         <option value="">Select Skill</option>
         <th:block th:each="skill : ${availableSkills}">
-            <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
+          <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
         </th:block>
-    </select>
+      </select>
+    </div>
 
-</div>
+    <script>
+      document
+        .getElementById("add-skill-button")
+        .addEventListener("click", function () {
+          const skillContainer = document.getElementById("skills-table-body"); // Container của các skill
+          const skillOptions =
+            document.getElementById("skill-template").innerHTML; // Lấy danh sách option từ template
+          const rowCount = skillContainer.rows.length; // Đếm số hàng hiện tại
 
-
-<script>
-
-        document.getElementById('add-skill-button').addEventListener('click', function () {
-            const skillContainer = document.getElementById('skills-table-body'); // Container của các skill
-            const skillOptions = document.getElementById('skill-template').innerHTML; // Lấy danh sách option từ template
-            const rowCount = skillContainer.rows.length; // Đếm số hàng hiện tại
-
-            // Tạo skill mới
-            const skillTemplate = `
+          // Tạo skill mới
+          const skillTemplate = `
 <tr>
     <td>
         <select class="form-select" name="skills[${rowCount}].id" required>
@@ -113,19 +153,15 @@
 </tr>
 `;
 
-            // Thêm skill mới vào bảng
-            skillContainer.insertAdjacentHTML('beforeend', skillTemplate);
+          // Thêm skill mới vào bảng
+          skillContainer.insertAdjacentHTML("beforeend", skillTemplate);
         });
 
-
-        // Hàm xóa skill
-        function removeSkill(button) {
-            const row = button.closest('tr'); // Tìm hàng cha
-            row.remove(); // Xóa hàng
-        }
-
-
-</script>
-
-</body>
+      // Hàm xóa skill
+      function removeSkill(button) {
+        const row = button.closest("tr"); // Tìm hàng cha
+        row.remove(); // Xóa hàng
+      }
+    </script>
+  </body>
 </html>
