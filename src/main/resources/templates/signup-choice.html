@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Choose Account Type</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/modern-theme.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Inter", sans-serif;
+        padding: 40px 20px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.1) 1px,
+            transparent 1px
+          ),
+          radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        background-position: 0 0, 25px 25px;
+        animation: moveBackground 20s linear infinite;
+        z-index: 0;
+      }
+
+      @keyframes moveBackground {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
+
+      .signup-container {
+        max-width: 1000px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .signup-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .header-section {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .logo-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      }
+
+      .logo-icon i {
+        font-size: 2.5rem;
+        color: white;
+      }
+
+      .signup-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+      }
+
+      .signup-subtitle {
+        color: #718096;
+        font-size: 1.1rem;
+      }
+
+      .account-type-card {
+        background: white;
+        border: 3px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 2.5rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .account-type-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gradient-color),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .account-type-card:hover::before {
+        transform: translateX(100%);
+      }
+
+      .candidate-card {
+        --gradient-color: #667eea;
+      }
+
+      .company-card {
+        --gradient-color: #764ba2;
+      }
+
+      .account-type-card:hover {
+        border-color: var(--gradient-color);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .icon-wrapper {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--icon-bg-1), var(--icon-bg-2));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .candidate-card .icon-wrapper {
+        --icon-bg-1: rgba(102, 126, 234, 0.1);
+        --icon-bg-2: rgba(102, 126, 234, 0.2);
+      }
+
+      .company-card .icon-wrapper {
+        --icon-bg-1: rgba(118, 75, 162, 0.1);
+        --icon-bg-2: rgba(118, 75, 162, 0.2);
+      }
+
+      .account-type-card:hover .icon-wrapper {
+        transform: rotateY(360deg);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .icon-wrapper i {
+        font-size: 3rem;
+      }
+
+      .candidate-card .icon-wrapper i {
+        color: #667eea;
+      }
+
+      .company-card .icon-wrapper i {
+        color: #764ba2;
+      }
+
+      .card-title-custom {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1rem;
+      }
+
+      .card-description {
+        color: #718096;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .features-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0;
+        text-align: left;
+      }
+
+      .features-list li {
+        padding: 0.75rem 0;
+        color: #4a5568;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .features-list li i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+      }
+
+      .candidate-card .features-list li i {
+        color: #667eea;
+      }
+
+      .company-card .features-list li i {
+        color: #764ba2;
+      }
+
+      .btn-choose {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-choose:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-candidate {
+        background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+        color: white;
+      }
+
+      .btn-company {
+        background: linear-gradient(135deg, #764ba2 0%, #643a8b 100%);
+        color: white;
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .login-link p {
+        color: #718096;
+        font-size: 1rem;
+      }
+
+      .login-link a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .login-link a:hover {
+        color: #764ba2;
+      }
+
+      .stats-row {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signup-container">
+      <div class="signup-card">
+        <div class="header-section">
+          <div class="logo-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <h1 class="signup-title">Join Our Platform</h1>
+          <p class="signup-subtitle">
+            Choose your account type to get started on your journey
+          </p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Candidate Card -->
+          <div class="col-md-6">
+            <div class="account-type-card candidate-card">
+              <div class="icon-wrapper">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <h3 class="card-title-custom text-center">I'm a Candidate</h3>
+              <p class="card-description text-center">
+                Looking for exciting job opportunities and want to showcase your
+                skills to top employers
+              </p>
+              <ul class="features-list">
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Browse thousands of job openings</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Create your professional profile</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Get matched with opportunities</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Receive personalized skill suggestions</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Track your applications</span>
+                </li>
+              </ul>
+              <a href="/signup/candidate" class="btn btn-candidate w-100">
+                <i class="fas fa-user-plus"></i>
+                <span>Sign Up as Candidate</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Company Card -->
+          <div class="col-md-6">
+            <div class="account-type-card company-card">
+              <div class="icon-wrapper">
+                <i class="fas fa-building"></i>
+              </div>
+              <h3 class="card-title-custom text-center">I'm a Company</h3>
+              <p class="card-description text-center">
+                Looking to hire talented professionals and build an exceptional
+                team for your organization
+              </p>
+              <ul class="features-list">
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Post unlimited job openings</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Access qualified candidate pool</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Manage applications efficiently</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Build your employer brand</span>
+                </li>
+                <li>
+                  <i class="fas fa-check-circle"></i>
+                  <span>Advanced filtering tools</span>
+                </li>
+              </ul>
+              <a href="/signup/company" class="btn btn-company w-100">
+                <i class="fas fa-building"></i>
+                <span>Sign Up as Company</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Active Jobs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">50K+</div>
+            <div class="stat-label">Candidates</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">5K+</div>
+            <div class="stat-label">Companies</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">95%</div>
+            <div class="stat-label">Success Rate</div>
+          </div>
+        </div>
+
+        <div class="login-link">
+          <p>
+            Already have an account?
+            <a href="/signin">
+              <i class="fas fa-sign-in-alt"></i> Login here
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
