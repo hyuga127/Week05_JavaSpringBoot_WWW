@@ -1,82 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- Bootstrap CSS CDN -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Job Portal</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        body {
-            background: url('https://response-technologies.com/wp-content/uploads/2022/07/video-banner.webp') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
-        }
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Inter", sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .card {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+      /* Animated Background */
+      body::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.1) 1px,
+            transparent 1px
+          ),
+          radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        background-position: 0 0, 25px 25px;
+        animation: moveBackground 20s linear infinite;
+        z-index: 0;
+      }
 
-        .form-control {
-            border-radius: 10px;
+      @keyframes moveBackground {
+        0% {
+          transform: translate(0, 0);
         }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
 
-        .btn-primary {
-            border-radius: 10px;
-            background-color: #007BFF;
-            border: none;
-        }
+      .login-container {
+        max-width: 450px;
+        width: 100%;
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 0.6s ease-out;
+      }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
+      .login-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+      .logo-section {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
 
-        .alert-danger {
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
+      .logo-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      }
 
-        h2 {
-            font-weight: bold;
-        }
+      .logo-icon i {
+        font-size: 2.5rem;
+        color: white;
+      }
+
+      .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+      }
+
+      .login-subtitle {
+        color: #718096;
+        font-size: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: block;
+      }
+
+      .input-group-modern {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        z-index: 10;
+      }
+
+      .form-control-modern {
+        padding-left: 3rem;
+        height: 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .form-control-modern:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        height: 50px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        color: white;
+      }
+
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .divider span {
+        padding: 0 1rem;
+        color: #718096;
+        font-size: 0.875rem;
+      }
+
+      .signup-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #718096;
+      }
+
+      .signup-link a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .signup-link a:hover {
+        color: #764ba2;
+      }
+
+      .alert-modern {
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        background: #fff5f5;
+        color: #c53030;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .alert-modern i {
+        margin-right: 0.5rem;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        color: #718096;
+      }
+
+      .feature-item i {
+        color: #667eea;
+        margin-right: 0.5rem;
+      }
     </style>
-</head>
-<body class="bg-light">
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-card">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <h1 class="login-title">Welcome Back</h1>
+          <p class="login-subtitle">Sign in to continue to Job Portal</p>
+        </div>
 
-<div class="container">
-    <div class="card shadow-lg p-4" style="width: 400px;">
-        <h2 class="text-center mb-4">Login</h2>
+        <div th:if="${error}" class="alert-modern">
+          <i class="fas fa-exclamation-circle"></i>
+          <span th:text="${error}"></span>
+        </div>
 
         <form action="/signin" method="post">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="username" placeholder="Enter your email" required>
+          <div class="form-group">
+            <label for="email" class="form-label">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <div class="input-group-modern">
+              <i class="fas fa-envelope input-icon"></i>
+              <input
+                type="email"
+                class="form-control form-control-modern"
+                id="email"
+                name="username"
+                placeholder="Enter your email"
+                required
+                autofocus
+              />
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">
+              <i class="fas fa-lock"></i> Password
+            </label>
+            <div class="input-group-modern">
+              <i class="fas fa-lock input-icon"></i>
+              <input
+                type="password"
+                class="form-control form-control-modern"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              />
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
+          </div>
+
+          <button type="submit" class="btn btn-login w-100">
+            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+          </button>
         </form>
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <span th:text="${error}"></span>
+
+        <div class="divider">
+          <span>or</span>
         </div>
+
+        <div class="signup-link">
+          <p class="mb-0">
+            Don't have an account?
+            <a href="/signup">
+              <i class="fas fa-user-plus"></i> Create Account
+            </a>
+          </p>
+        </div>
+
+        <div class="features">
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Secure Login</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>24/7 Support</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Quick Access</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Trusted Portal</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-</div>
-
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
