@@ -1,107 +1,154 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Job - Company Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        .container-90 {
-            width: 90%;
-            margin: 0 auto;
-        }
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .content {
-            flex: 1;
-        }
+      .container-90 {
+        width: 90%;
+        margin: 0 auto;
+      }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .content {
+        flex: 1;
+      }
     </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Nhúng header -->
+      <header th:replace="~{header :: header}"></header>
 
-</head>
-<body>
-<div class="wrapper">
-    <!-- Nhúng header -->
-    <header th:replace="~{header :: header}"></header>
-
-
-    <div class="container mt-5 content">
-    <div class="card">
-        <div class="card-header">
+      <div class="container mt-5 content">
+        <div class="card">
+          <div class="card-header">
             <h3>Add New Job</h3>
-        </div>
-        <div class="card-body">
+          </div>
+          <div class="card-body">
             <form action="/company/add-job" method="POST">
-                <!-- Job Name -->
-                <div class="form-group">
-                    <label for="jobName">Job Name</label>
-                    <input type="text" class="form-control" id="jobName" name="jobName" required>
-                </div>
+              <!-- Job Name -->
+              <div class="form-group">
+                <label for="jobName">Job Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="jobName"
+                  name="jobName"
+                  required
+                />
+              </div>
 
-                <!-- Job Description -->
-                <div class="form-group">
-                    <label for="jobDescription">Job Description</label>
-                    <textarea class="form-control" id="jobDescription" name="jobDescription" rows="4" required></textarea>
-                </div>
+              <!-- Job Description -->
+              <div class="form-group">
+                <label for="jobDescription">Job Description</label>
+                <textarea
+                  class="form-control"
+                  id="jobDescription"
+                  name="jobDescription"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
 
-                <!-- Skills Section -->
-                <div class="form-group">
-                    <label>Skills</label>
-                    <div id="skills-container">
-                        <!-- Initial Skill Input -->
-                        <div class="skill-input">
-                            <select class="form-control" name="skills[0].skill" required>
-                                <option value="">Select Skill</option>
-                                <th:block th:each="skill : ${availableSkills}">
-                                    <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
-                                </th:block>
-                            </select>
-                            <select class="form-control" name="skills[0].skillLevel" required>
-                                <option value="">Select Skill Level</option>
-                                <option value="1">Beginner</option>
-                                <option value="2">Intermediate</option>
-                                <option value="3">Advanced</option>
-                                <option value="4">Professional</option>
-                                <option value="5">Master</option>
-                            </select>
-                            <textarea class="form-control" name="skills[0].moreInfos" placeholder="Additional Information"></textarea>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-info mt-2" id="addSkillButton">Add Another Skill</button>
+              <!-- Skills Section -->
+              <div class="form-group">
+                <label>Skills</label>
+                <div id="skills-container">
+                  <!-- Initial Skill Input -->
+                  <div class="skill-input">
+                    <select
+                      class="form-control"
+                      name="skills[0].skill"
+                      required
+                    >
+                      <option value="">Select Skill</option>
+                      <th:block th:each="skill : ${availableSkills}">
+                        <option
+                          th:value="${skill.id}"
+                          th:text="${skill.skillName}"
+                        ></option>
+                      </th:block>
+                    </select>
+                    <select
+                      class="form-control"
+                      name="skills[0].skillLevel"
+                      required
+                    >
+                      <option value="">Select Skill Level</option>
+                      <option value="1">Beginner</option>
+                      <option value="2">Intermediate</option>
+                      <option value="3">Advanced</option>
+                      <option value="4">Professional</option>
+                      <option value="5">Master</option>
+                    </select>
+                    <textarea
+                      class="form-control"
+                      name="skills[0].moreInfos"
+                      placeholder="Additional Information"
+                    ></textarea>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  class="btn btn-info mt-2"
+                  id="addSkillButton"
+                >
+                  Add Another Skill
+                </button>
+              </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-custom mt-3">Add Job</button>
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-custom mt-3">Add Job</button>
             </form>
+          </div>
         </div>
-    </div>
-</div>
-    <!-- Template lưu danh sách các skill -->
-    <select id="skill-template" class="d-none">
+      </div>
+      <!-- Template lưu danh sách các skill -->
+      <select id="skill-template" class="d-none">
         <option value="">Select Skill</option>
         <th:block th:each="skill : ${availableSkills}">
-            <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
+          <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
         </th:block>
-    </select>
+      </select>
 
-<footer th:replace="~{footer :: footer}"></footer>
-</div>
-<script>
-    document.getElementById('addSkillButton').addEventListener('click', function () {
-        const skillContainer = document.getElementById('skills-container');
-        const skillCount = skillContainer.getElementsByClassName('skill-input').length;
+      <footer th:replace="~{footer :: footer}"></footer>
+    </div>
+    <script>
+      document
+        .getElementById("addSkillButton")
+        .addEventListener("click", function () {
+          const skillContainer = document.getElementById("skills-container");
+          const skillCount =
+            skillContainer.getElementsByClassName("skill-input").length;
 
-        // Lấy danh sách các skill từ template đã render bởi Thymeleaf
-        const skillOptions = document.getElementById('skill-template').innerHTML;
+          // Lấy danh sách các skill từ template đã render bởi Thymeleaf
+          const skillOptions =
+            document.getElementById("skill-template").innerHTML;
 
-        // Tạo div mới chứa các input skill
-        const newSkillInput = document.createElement('div');
-        newSkillInput.classList.add('skill-input');
+          // Tạo div mới chứa các input skill
+          const newSkillInput = document.createElement("div");
+          newSkillInput.classList.add("skill-input");
 
-        // Nội dung HTML cho skill mới
-        newSkillInput.innerHTML = `
+          // Nội dung HTML cho skill mới
+          newSkillInput.innerHTML = `
         <select class="form-control" name="skills[${skillCount}].skill" required>
             ${skillOptions}
         </select>
@@ -116,13 +163,13 @@
         <textarea class="form-control" name="skills[${skillCount}].moreInfos" placeholder="Additional Information"></textarea>
     `;
 
-        console.log("New Skill: ",newSkillInput);
+          console.log("New Skill: ", newSkillInput);
 
-        // Thêm vào container
-        skillContainer.appendChild(newSkillInput);
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+          // Thêm vào container
+          skillContainer.appendChild(newSkillInput);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

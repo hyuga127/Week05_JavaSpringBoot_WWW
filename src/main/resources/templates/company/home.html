@@ -1,124 +1,598 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company Dashboard - Job Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        .container-90 {
-            width: 90%;
-            margin: 0 auto;
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .content {
+        flex: 1;
+        padding: 2rem 0;
+      }
+
+      .container-90 {
+        width: 90%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .welcome-section {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: white;
+      }
+
+      .welcome-section p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin-bottom: 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+        border: 2px solid transparent;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        border-color: #764ba2;
+      }
+
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-icon.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(118, 75, 162, 0.15),
+          rgba(102, 126, 234, 0.15)
+        );
+        color: #764ba2;
+      }
+
+      .stat-icon.success {
+        background: linear-gradient(
+          135deg,
+          rgba(72, 187, 120, 0.15),
+          rgba(56, 161, 105, 0.15)
+        );
+        color: #48bb78;
+      }
+
+      .stat-icon.warning {
+        background: linear-gradient(
+          135deg,
+          rgba(246, 173, 85, 0.15),
+          rgba(237, 137, 54, 0.15)
+        );
+        color: #f6ad55;
+      }
+
+      .stat-icon.info {
+        background: linear-gradient(
+          135deg,
+          rgba(66, 153, 225, 0.15),
+          rgba(49, 130, 206, 0.15)
+        );
+        color: #4299e1;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .action-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        height: 100%;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .action-card h5 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .action-card h5 i {
+        color: #764ba2;
+      }
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        margin-bottom: 1rem;
+        text-decoration: none;
+      }
+
+      .action-btn i {
+        font-size: 1.1rem;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-primary-modern {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        color: white;
+      }
+
+      .btn-secondary-modern {
+        background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+        color: white;
+      }
+
+      .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-title i {
+        color: #764ba2;
+      }
+
+      .modern-table {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .modern-table thead {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        color: white;
+      }
+
+      .modern-table thead th {
+        padding: 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+      }
+
+      .modern-table tbody td {
+        padding: 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .modern-table tbody tr:hover {
+        background: #f7fafc;
+      }
+
+      .job-title {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+      }
+
+      .btn-sm-modern {
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        border: none;
+        margin-right: 0.5rem;
+      }
+
+      .btn-sm-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-warning-modern {
+        background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+        color: white;
+      }
+
+      .btn-danger-modern {
+        background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+        color: white;
+      }
+
+      .pagination-modern .page-link {
+        border: 2px solid #e2e8f0;
+        color: #764ba2;
+        margin: 0 0.25rem;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .pagination-modern .page-link:hover {
+        background: #764ba2;
+        color: white;
+        border-color: #764ba2;
+        transform: translateY(-2px);
+      }
+
+      .pagination-modern .page-item.active .page-link {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        border-color: #764ba2;
+      }
+
+      .pagination-modern .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .sidebar-widget {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      .sidebar-widget h5 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sidebar-widget h5 i {
+        color: #764ba2;
+      }
+
+      .alert-modern {
+        border-radius: 12px;
+        border: none;
+        padding: 1.25rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .alert-modern i {
+        font-size: 1.5rem;
+      }
+
+      .insight-item {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .insight-item:last-child {
+        border-bottom: none;
+      }
+
+      .insight-label {
+        color: #718096;
+        font-size: 0.95rem;
+      }
+
+      .insight-value {
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 1.1rem;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .content {
-            flex: 1;
-        }
+      }
     </style>
-</head>
-<body>
-<div class="wrapper">
-    <!-- Nhúng header -->
-    <header th:replace="~{header :: header}"></header>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header th:replace="~{header :: header}"></header>
 
-    <div class="container-90 mt-4 content">
-        <div class="row">
-            <div class="col-md-8">
-                <h1 class="mb-4"><span th:text="${greeting}"></span>, <span th:text="${company.name}"></span></h1>
-
-                <p class="lead">
-                    Use the options below to manage your job postings and review applications.
-                </p>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Quick Actions</h5>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <a href="/company/add-job" class="btn btn-primary w-100">Post a New Job</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="/api/company/job-applicants" class="btn btn-secondary w-100">View Job Applicants</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      <div class="container-90 content">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+          <h1>
+            <span th:text="${greeting}"></span>,
+            <span th:text="${company.name}"></span>! 🏢
+          </h1>
+          <p>
+            Manage your job postings and find the perfect candidates for your
+            team.
+          </p>
         </div>
 
-        <hr>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="stat-value" th:text="${jobPage.totalElements}">0</div>
+            <div class="stat-label">Active Jobs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-value">45</div>
+            <div class="stat-label">Total Applicants</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Pending Reviews</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon info">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value">89%</div>
+            <div class="stat-label">Fill Rate</div>
+          </div>
+        </div>
 
         <div class="row">
-            <div class="col-md-9">
-                <h3>Your Active Job Postings</h3>
-                <!-- Danh sách công việc với phân trang -->
-                <table class="table table-striped mt-3">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Job Title</th>
-                        <th>Website Company</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="job, iterStat : ${jobPage.content}">
-                        <!-- Số thứ tự -->
-                        <td th:text="${jobPage.number * jobPage.size + iterStat.index + 1}"></td>
-                        <!-- Tên công việc -->
-                        <td th:text="${job.name}">Job Title</td>
-                        <!-- Ngày đăng -->
-                        <td th:text="${company.webUrl}" ></td>
-                        <!-- Hành động -->
-                        <td>
-                            <a th:href="@{'/company/edit-job/' + ${job.id}}" class="btn btn-warning btn-sm">Edit</a>
-                            <a th:href="@{'/company/delete-job/' + ${job.id}}" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-
-                    <tr th:if="${jobPage.content.size() == 0}">
-                        <td colspan="4" class="text-center">No job postings found.</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!-- Phân trang -->
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li class="page-item" th:class="${!jobPage.hasPrevious() ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/company/home(page=${jobPage.number - 1})}">Previous</a>
-                        </li>
-                        <li class="page-item" th:each="pageNumber : ${pageNumbers}" th:class="${pageNumber == jobPage.number + 1 ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/company/home(page=${pageNumber - 1})}" th:text="${pageNumber}">1</a>
-                        </li>
-                        <li class="page-item" th:class="${!jobPage.hasNext() ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/company/home(page=${jobPage.number + 1})}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
+          <div class="col-lg-9 mb-4">
+            <!-- Jobs Table -->
+            <div class="section-title">
+              <i class="fas fa-briefcase"></i>
+              <span>Your Job Postings</span>
             </div>
 
-            <div class="col-md-3">
-                <h3>Insights</h3>
-                <div class="alert alert-info mt-3">
-                    <strong>Tip:</strong> Ensure your job descriptions clearly mention required skills to attract the right candidates.
+            <div class="modern-table">
+              <table class="table mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 50px">#</th>
+                    <th>Job Title</th>
+                    <th style="width: 200px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="job, iterStat : ${jobPage.content}">
+                    <td>
+                      <strong
+                        th:text="${jobPage.number * jobPage.size + iterStat.index + 1}"
+                        >1</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="job-title" th:text="${job.name}">
+                        Senior Developer
+                      </div>
+                      <small class="text-muted">
+                        <i class="fas fa-calendar-alt me-1"></i>
+                        Posted recently
+                      </small>
+                    </td>
+                    <td>
+                      <a
+                        th:href="@{'/company/edit-job/' + ${job.id}}"
+                        class="btn btn-warning-modern btn-sm-modern"
+                      >
+                        <i class="fas fa-edit"></i> Edit
+                      </a>
+                      <a
+                        th:href="@{'/company/delete-job/' + ${job.id}}"
+                        class="btn btn-danger-modern btn-sm-modern"
+                        onclick="return confirm('Are you sure you want to delete this job?');"
+                      >
+                        <i class="fas fa-trash"></i> Delete
+                      </a>
+                    </td>
+                  </tr>
+                  <tr th:if="${jobPage.content.size() == 0}">
+                    <td colspan="3" class="text-center py-5">
+                      <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                      <p class="text-muted">
+                        No job postings yet. Start by creating your first job!
+                      </p>
+                      <a
+                        href="/company/add-job"
+                        class="btn btn-primary-modern mt-3"
+                      >
+                        <i class="fas fa-plus-circle"></i> Post a Job
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+              <ul class="pagination pagination-modern justify-content-center">
+                <li
+                  class="page-item"
+                  th:class="${!jobPage.hasPrevious() ? 'disabled' : ''}"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/company/home(page=${jobPage.number - 1})}"
+                  >
+                    <i class="fas fa-chevron-left"></i> Previous
+                  </a>
+                </li>
+                <li
+                  class="page-item"
+                  th:each="pageNumber : ${pageNumbers}"
+                  th:class="${pageNumber == jobPage.number + 1 ? 'active' : ''}"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/company/home(page=${pageNumber - 1})}"
+                    th:text="${pageNumber}"
+                    >1</a
+                  >
+                </li>
+                <li
+                  class="page-item"
+                  th:class="${!jobPage.hasNext() ? 'disabled' : ''}"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/company/home(page=${jobPage.number + 1})}"
+                  >
+                    Next <i class="fas fa-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-lg-3">
+            <!-- Quick Actions -->
+            <div class="action-card">
+              <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+              <a
+                href="/company/add-job"
+                class="action-btn btn-primary-modern w-100"
+              >
+                <i class="fas fa-plus-circle"></i>
+                <span>Post New Job</span>
+              </a>
+              <a
+                href="/api/company/job-applicants"
+                class="action-btn btn-secondary-modern w-100"
+              >
+                <i class="fas fa-users"></i>
+                <span>View Applicants</span>
+              </a>
+            </div>
+
+            <!-- Insights -->
+            <div class="sidebar-widget">
+              <h5><i class="fas fa-chart-bar"></i> Insights</h5>
+              <div class="alert alert-info alert-modern">
+                <i class="fas fa-lightbulb"></i>
+                <div>
+                  <strong>Pro Tip:</strong>
+                  <p class="mb-0 small mt-1">
+                    Clear job descriptions with specific skills attract better
+                    candidates.
+                  </p>
                 </div>
-                <ul>
-                    <li>Total Jobs Posted: <strong th:text="${jobPage.totalElements}"></strong></li>
-                    <li>Total Applications Received: <strong>45</strong></li>
-                </ul>
+              </div>
+              <div class="mt-3">
+                <div class="insight-item">
+                  <span class="insight-label">Total Jobs Posted</span>
+                  <span class="insight-value" th:text="${jobPage.totalElements}"
+                    >0</span
+                  >
+                </div>
+                <div class="insight-item">
+                  <span class="insight-label">Applications Received</span>
+                  <span class="insight-value">45</span>
+                </div>
+                <div class="insight-item">
+                  <span class="insight-label">Avg. Response Time</span>
+                  <span class="insight-value">2.5 days</span>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+
+      <div th:replace="~{footer :: footer}"></div>
     </div>
 
-    <!-- Nhúng footer -->
-    <div th:replace="~{footer :: footer}"></div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

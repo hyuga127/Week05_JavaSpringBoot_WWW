@@ -1,137 +1,203 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Job - Company Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/modern-theme.css" />
     <style>
-        .container-90 {
-            width: 90%;
-            margin: 0 auto;
-        }
+      .container-90 {
+        width: 90%;
+        margin: 0 auto;
+      }
 
-        .wrapper {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+      .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .content {
-            flex: 1;
-        }
+      .content {
+        flex: 1;
+      }
     </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Nhúng header -->
+      <header th:replace="~{header :: header}"></header>
 
-</head>
-<body>
-<div class="wrapper">
-    <!-- Nhúng header -->
-    <header th:replace="~{header :: header}"></header>
-
-
-    <div class="container mt-5 content">
+      <div class="container mt-5 content">
         <div class="card">
-            <div class="card-header">
-                <h3>Update Your Job Posting Information</h3>
-            </div>
-            <div class="card-body">
-                <form action="/company/update-job" method="POST">
-                    <input type="hidden" name="jobId" th:value="${job.id}"/>
+          <div class="card-header">
+            <h3>Update Your Job Posting Information</h3>
+          </div>
+          <div class="card-body">
+            <form action="/company/update-job" method="POST">
+              <input type="hidden" name="jobId" th:value="${job.id}" />
 
-                    <!-- Job Name -->
-                    <div class="form-group">
-                        <label for="jobName">Job Name</label>
-                        <input type="text" class="form-control" id="jobName" name="jobName" th:value="${job.name}"
-                               required>
-                    </div>
+              <!-- Job Name -->
+              <div class="form-group">
+                <label for="jobName">Job Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="jobName"
+                  name="jobName"
+                  th:value="${job.name}"
+                  required
+                />
+              </div>
 
-                    <!-- Job Description -->
-                    <div class="form-group">
-                        <label for="jobDescription">Job Description</label>
-                        <textarea class="form-control" id="jobDescription" name="jobDescription" rows="4"
-                                  th:text="${job.description}" required></textarea>
-                    </div>
+              <!-- Job Description -->
+              <div class="form-group">
+                <label for="jobDescription">Job Description</label>
+                <textarea
+                  class="form-control"
+                  id="jobDescription"
+                  name="jobDescription"
+                  rows="4"
+                  th:text="${job.description}"
+                  required
+                ></textarea>
+              </div>
 
-                    <!-- Skills Section -->
-                    <div class="form-group">
-                        <label>Skills</label>
-                        <div id="skills-container">
-                            <div class="skill-input" th:each="jobSkill, i : ${job.jobSkills}">
-                                <!-- Dropdown chọn Skill -->
-                                <label>
-                                    <select class="form-control" name="skills[${i.index}].skill" required>
-                                        <option value="" disabled>Select Skill</option>
-                                        <th:block th:each="skill : ${availableSkills}">
-                                            <option
-                                                    th:value="${skill.id}"
-                                                    th:selected="${skill.id == jobSkill.skill.id}"
-                                                    th:text="${skill.skillName}">
-                                            </option>
-                                        </th:block>
-                                    </select>
-                                </label>
+              <!-- Skills Section -->
+              <div class="form-group">
+                <label>Skills</label>
+                <div id="skills-container">
+                  <div
+                    class="skill-input"
+                    th:each="jobSkill, i : ${job.jobSkills}"
+                  >
+                    <!-- Dropdown chọn Skill -->
+                    <label>
+                      <select
+                        class="form-control"
+                        name="skills[${i.index}].skill"
+                        required
+                      >
+                        <option value="" disabled>Select Skill</option>
+                        <th:block th:each="skill : ${availableSkills}">
+                          <option
+                            th:value="${skill.id}"
+                            th:selected="${skill.id == jobSkill.skill.id}"
+                            th:text="${skill.skillName}"
+                          ></option>
+                        </th:block>
+                      </select>
+                    </label>
 
-                                <!-- Dropdown chọn Skill Level -->
-                                <label>
-                                    <select class="form-control" name="skills[${i.index}].skillLevel" required>
-                                        <option value="" disabled>Select Skill Level</option>
-                                        <option value="1" th:selected="${jobSkill.skillLevel.getValue() == 1}">
-                                            Beginner
-                                        </option>
-                                        <option value="2" th:selected="${jobSkill.skillLevel.getValue() == 2}">
-                                            Intermediate
-                                        </option>
-                                        <option value="3" th:selected="${jobSkill.skillLevel.getValue() == 3}">
-                                            Advanced
-                                        </option>
-                                        <option value="4" th:selected="${jobSkill.skillLevel.getValue() == 4}">
-                                            Professional
-                                        </option>
-                                        <option value="5" th:selected="${jobSkill.skillLevel.getValue() == 5}">Master
-                                        </option>
-                                    </select>
-                                </label>
+                    <!-- Dropdown chọn Skill Level -->
+                    <label>
+                      <select
+                        class="form-control"
+                        name="skills[${i.index}].skillLevel"
+                        required
+                      >
+                        <option value="" disabled>Select Skill Level</option>
+                        <option
+                          value="1"
+                          th:selected="${jobSkill.skillLevel.getValue() == 1}"
+                        >
+                          Beginner
+                        </option>
+                        <option
+                          value="2"
+                          th:selected="${jobSkill.skillLevel.getValue() == 2}"
+                        >
+                          Intermediate
+                        </option>
+                        <option
+                          value="3"
+                          th:selected="${jobSkill.skillLevel.getValue() == 3}"
+                        >
+                          Advanced
+                        </option>
+                        <option
+                          value="4"
+                          th:selected="${jobSkill.skillLevel.getValue() == 4}"
+                        >
+                          Professional
+                        </option>
+                        <option
+                          value="5"
+                          th:selected="${jobSkill.skillLevel.getValue() == 5}"
+                        >
+                          Master
+                        </option>
+                      </select>
+                    </label>
 
-                                <!-- Textarea để nhập thêm thông tin -->
-                                <textarea
-                                        class="form-control"
-                                        name="skills[${i.index}].moreInfos"
-                                        th:text="${jobSkill.moreInfos}"
-                                        placeholder="Additional Information"></textarea>
+                    <!-- Textarea để nhập thêm thông tin -->
+                    <textarea
+                      class="form-control"
+                      name="skills[${i.index}].moreInfos"
+                      th:text="${jobSkill.moreInfos}"
+                      placeholder="Additional Information"
+                    ></textarea>
 
-                                <!-- Nút xóa kỹ năng -->
-                                <button type="button" class="btn btn-danger mt-2 remove-skill">Remove</button>
-                            </div>
-                        </div>
-                        <button type="button" id="addSkillButton" class="btn btn-primary mt-3">Add Skill</button>
-                    </div>
+                    <!-- Nút xóa kỹ năng -->
+                    <button
+                      type="button"
+                      class="btn btn-danger mt-2 remove-skill"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  id="addSkillButton"
+                  class="btn btn-primary mt-3"
+                >
+                  Add Skill
+                </button>
+              </div>
 
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-custom mt-3">Update Job</button>
-                </form>
-            </div>
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-custom mt-3">
+                Update Job
+              </button>
+            </form>
+          </div>
         </div>
-    </div>
-    <!-- Template lưu danh sách các skill -->
-    <select id="skill-template" class="d-none">
+      </div>
+      <!-- Template lưu danh sách các skill -->
+      <select id="skill-template" class="d-none">
         <option value="">Select Skill</option>
         <th:block th:each="skill : ${availableSkills}">
-            <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
+          <option th:value="${skill.id}" th:text="${skill.skillName}"></option>
         </th:block>
-    </select>
+      </select>
 
-    <footer th:replace="~{footer :: footer}"></footer>
-</div>
-<script>
-    document.getElementById('addSkillButton').addEventListener('click', function () {
-        const skillContainer = document.getElementById('skills-container');
-        const skillCount = skillContainer.getElementsByClassName('skill-input').length;
+      <footer th:replace="~{footer :: footer}"></footer>
+    </div>
+    <script>
+      document
+        .getElementById("addSkillButton")
+        .addEventListener("click", function () {
+          const skillContainer = document.getElementById("skills-container");
+          const skillCount =
+            skillContainer.getElementsByClassName("skill-input").length;
 
-        // Lấy danh sách các skill từ template đã render bởi Thymeleaf
-        const skillOptions = document.getElementById('skill-template').innerHTML;
+          // Lấy danh sách các skill từ template đã render bởi Thymeleaf
+          const skillOptions =
+            document.getElementById("skill-template").innerHTML;
 
-        const skillTemplate = `
+          const skillTemplate = `
         <div class="skill-input">
             <select class="form-control" name="skills[${skillCount}].skill" required>
             ${skillOptions}
@@ -149,20 +215,21 @@
         </div>
     `;
 
-        const newSkillDiv = document.createElement('div');
-        newSkillDiv.innerHTML = skillTemplate;
-        skillContainer.appendChild(newSkillDiv);
-    });
+          const newSkillDiv = document.createElement("div");
+          newSkillDiv.innerHTML = skillTemplate;
+          skillContainer.appendChild(newSkillDiv);
+        });
 
-    // Xử lý nút xóa kỹ năng
-    document.getElementById('skills-container').addEventListener('click', function (event) {
-        if (event.target.classList.contains('remove-skill')) {
-            event.target.closest('.skill-input').remove();
-        }
-    });
-
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+      // Xử lý nút xóa kỹ năng
+      document
+        .getElementById("skills-container")
+        .addEventListener("click", function (event) {
+          if (event.target.classList.contains("remove-skill")) {
+            event.target.closest(".skill-input").remove();
+          }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
