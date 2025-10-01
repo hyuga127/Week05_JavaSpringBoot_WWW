@@ -1,18 +1,199 @@
 <!-- footer.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <body>
+    <div th:fragment="footer">
+      <footer class="modern-footer">
+        <div class="footer-content">
+          <div class="row">
+            <!-- About Section -->
+            <div class="col-md-4 footer-section">
+              <div class="footer-brand">
+                <div class="footer-brand-icon">
+                  <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="footer-brand-text">Job Portal</div>
+              </div>
+              <p class="footer-description">
+                Connecting talented professionals with leading companies. Find
+                your dream job or hire the perfect candidate with our advanced
+                matching system.
+              </p>
 
-<body>
-<div th:fragment="footer">
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <div sec:authorize="hasRole('ROLE_COMPANY')">
-            <p>Company Portal &copy; 2024. All rights reserved.</p>
-        </div>
+              <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link" title="Twitter">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link" title="LinkedIn">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="social-link" title="Instagram">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              </div>
+            </div>
 
-        <div sec:authorize="hasRole('ROLE_CANDIDATE')">
-            <p>Candidate Portal &copy; 2024. All rights reserved.</p>
+            <!-- Quick Links -->
+            <div class="col-md-2 footer-section">
+              <h5 class="footer-title">
+                <i class="fas fa-link"></i>
+                Quick Links
+              </h5>
+              <ul class="footer-links">
+                <li sec:authorize="hasRole('ROLE_COMPANY')">
+                  <a href="/company/home">
+                    <i class="fas fa-chevron-right"></i>
+                    Dashboard
+                  </a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_CANDIDATE')">
+                  <a href="/candidate/home">
+                    <i class="fas fa-chevron-right"></i>
+                    Home
+                  </a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_COMPANY')">
+                  <a href="/company/add-job">
+                    <i class="fas fa-chevron-right"></i>
+                    Post Job
+                  </a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_CANDIDATE')">
+                  <a href="/candidate/suggest-skills">
+                    <i class="fas fa-chevron-right"></i>
+                    Skill Suggestions
+                  </a>
+                </li>
+                <li>
+                  <a href="#about">
+                    <i class="fas fa-chevron-right"></i>
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact">
+                    <i class="fas fa-chevron-right"></i>
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="col-md-3 footer-section">
+              <h5 class="footer-title">
+                <i class="fas fa-book"></i>
+                Resources
+              </h5>
+              <ul class="footer-links">
+                <li>
+                  <a href="#faq">
+                    <i class="fas fa-chevron-right"></i>
+                    FAQ
+                  </a>
+                </li>
+                <li>
+                  <a href="#help">
+                    <i class="fas fa-chevron-right"></i>
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#terms">
+                    <i class="fas fa-chevron-right"></i>
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#privacy">
+                    <i class="fas fa-chevron-right"></i>
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#blog">
+                    <i class="fas fa-chevron-right"></i>
+                    Blog
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md-3 footer-section">
+              <h5 class="footer-title">
+                <i class="fas fa-address-book"></i>
+                Contact Us
+              </h5>
+              <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>123 Business Ave, Suite 100<br />New York, NY 10001</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>+1 (555) 123-4567</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>support@jobportal.com</span>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>Mon - Fri: 9:00 AM - 6:00 PM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Section -->
+          <div class="footer-stats">
+            <div class="footer-stat-item">
+              <div class="footer-stat-number">10K+</div>
+              <div class="footer-stat-label">Active Jobs</div>
+            </div>
+            <div class="footer-stat-item">
+              <div class="footer-stat-number">50K+</div>
+              <div class="footer-stat-label">Candidates</div>
+            </div>
+            <div class="footer-stat-item">
+              <div class="footer-stat-number">5K+</div>
+              <div class="footer-stat-label">Companies</div>
+            </div>
+            <div class="footer-stat-item">
+              <div class="footer-stat-number">95%</div>
+              <div class="footer-stat-label">Success Rate</div>
+            </div>
+          </div>
+
+          <!-- Bottom Bar -->
+          <div class="footer-bottom">
+            <p>
+              &copy; <span id="currentYear"></span> <strong>Job Portal</strong>.
+              All rights reserved.
+              <span sec:authorize="hasRole('ROLE_COMPANY')"
+                >| Company Portal</span
+              >
+              <span sec:authorize="hasRole('ROLE_CANDIDATE')"
+                >| Candidate Portal</span
+              >
+              | Made with
+              <i class="fas fa-heart" style="color: #f56565"></i> for job
+              seekers and employers
+            </p>
+          </div>
         </div>
-    </footer>
-</div>
-</body>
+      </footer>
+
+      <script>
+        // Set current year
+        document.getElementById("currentYear").textContent =
+          new Date().getFullYear();
+      </script>
+    </div>
+  </body>
 </html>

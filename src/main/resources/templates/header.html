@@ -1,49 +1,122 @@
 <!-- header.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<body>
-<div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <div sec:authorize="hasRole('ROLE_COMPANY')">
-                <a class="navbar-brand" href="/company/home">Admin Portal</a>
-            </div>
-            <!-- Phần dành riêng cho Candidate -->
-            <div sec:authorize="hasRole('ROLE_CANDIDATE')">
-                <a class="navbar-brand" href="/candidate/home">Candidate Portal</a>
-            </div>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <body>
+    <div th:fragment="header">
+      <nav class="navbar navbar-expand-lg modern-navbar">
+        <div class="container-fluid px-4">
+          <!-- Company Portal -->
+          <div sec:authorize="hasRole('ROLE_COMPANY')">
+            <a class="navbar-brand-modern" href="/company/home">
+              <span class="brand-icon">
+                <i class="fas fa-briefcase"></i>
+              </span>
+              <span class="brand-text">Job Portal</span>
+            </a>
+          </div>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
-                        <a class="nav-link" href="/api/company/jobs">Post Job</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
-                        <a class="nav-link" href="/api/company/job-applicants">View Applicants</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_COMPANY')">
-                        <a class="nav-link btn btn-danger text-white" href="/logout">Logout</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
-                        <a class="nav-link" href="/api/candidate/matching-jobs">Matching Jobs</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
-                        <a class="nav-link" href="/api/candidate/applications">My Applications</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
-                        <a class="nav-link" href="/api/candidate/suggest-skills">Skill Suggestions</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_CANDIDATE')">
-                        <a class="nav-link btn btn-danger text-white" href="/logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
+          <!-- Candidate Portal -->
+          <div sec:authorize="hasRole('ROLE_CANDIDATE')">
+            <a class="navbar-brand-modern" href="/candidate/home">
+              <span class="brand-icon">
+                <i class="fas fa-briefcase"></i>
+              </span>
+              <span class="brand-text">Job Portal</span>
+            </a>
+          </div>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Company Navigation -->
+            <ul
+              class="navbar-nav ms-auto align-items-center"
+              sec:authorize="hasRole('ROLE_COMPANY')"
+            >
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/company/home">
+                  <i class="fas fa-home"></i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/company/add-job">
+                  <i class="fas fa-plus-circle"></i>
+                  <span>Post Job</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/api/company/job-applicants">
+                  <i class="fas fa-users"></i>
+                  <span>Applicants</span>
+                </a>
+              </li>
+              <li class="nav-item ms-3">
+                <a class="btn-logout-modern" href="/logout">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </li>
+            </ul>
+
+            <!-- Candidate Navigation -->
+            <ul
+              class="navbar-nav ms-auto align-items-center"
+              sec:authorize="hasRole('ROLE_CANDIDATE')"
+            >
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/candidate/home">
+                  <i class="fas fa-home"></i>
+                  <span>Home</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/api/candidate/matching-jobs">
+                  <i class="fas fa-search"></i>
+                  <span>Find Jobs</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/api/candidate/applications">
+                  <i class="fas fa-file-alt"></i>
+                  <span>Applications</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/candidate/suggest-skills">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>Skills</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link-modern" href="/candidate/edit-information">
+                  <i class="fas fa-user-edit"></i>
+                  <span>Profile</span>
+                </a>
+              </li>
+              <li class="nav-item ms-3">
+                <a class="btn-logout-modern" href="/logout">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </nav>
-</div>
-</body>
+      </nav>
+    </div>
+  </body>
 </html>
