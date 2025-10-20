@@ -75,6 +75,11 @@ public class CandidateController {
         return "/candidate/home";
     }
 
+    @GetMapping("/search-jobs")
+    public String searchJobs() {
+        return "/candidate/search-jobs";
+    }
+
 
     @Autowired
     private JobSkillService jobSkillService;
