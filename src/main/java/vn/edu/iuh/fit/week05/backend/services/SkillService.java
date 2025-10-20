@@ -33,8 +33,13 @@ public class SkillService {
 
     public List<Skill> getSuggestedSkills(Long candidateId) {
         return skillRepository.findSkillNotLearnByCandidate(candidateId);
-
     }
 
+    public Skill saveSkill(Skill skill) {
+        return skillRepository.save(skill);
+    }
 
+    public void deleteSkill(Long id) {
+        skillRepository.deleteById(id);
+    }
 }

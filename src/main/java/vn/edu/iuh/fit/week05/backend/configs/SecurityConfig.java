@@ -72,36 +72,36 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
-    public JdbcUserDetailsManager jdbcUserDetailsManager() {
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-
-        userDetailsManager.setUsersByUsernameQuery(
-                "SELECT email AS username, password, true AS enabled " +
-                        "FROM (" +
-                        "   SELECT email, password FROM candidate " +
-                        "   UNION ALL " +
-                        "   SELECT email, password FROM company" +
-                        ") AS users WHERE email = ?");
-
-        userDetailsManager.setAuthoritiesByUsernameQuery(
-                "SELECT email AS username, role AS authority " +
-                        "FROM (" +
-                        "   SELECT email, 'ROLE_CANDIDATE' AS role FROM candidate " +
-                        "   UNION ALL " +
-                        "   SELECT email, 'ROLE_COMPANY' AS role FROM company" +
-                        ") AS roles WHERE email = ?");
-
-        return userDetailsManager;
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(jdbcUserDetailsManager());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+//    @Bean
+//    public JdbcUserDetailsManager jdbcUserDetailsManager() {
+//        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//
+//        userDetailsManager.setUsersByUsernameQuery(
+//                "SELECT email AS username, password, true AS enabled " +
+//                        "FROM (" +
+//                        "   SELECT email, password FROM candidate " +
+//                        "   UNION ALL " +
+//                        "   SELECT email, password FROM company" +
+//                        ") AS users WHERE email = ?");
+//
+//        userDetailsManager.setAuthoritiesByUsernameQuery(
+//                "SELECT email AS username, role AS authority " +
+//                        "FROM (" +
+//                        "   SELECT email, 'ROLE_CANDIDATE' AS role FROM candidate " +
+//                        "   UNION ALL " +
+//                        "   SELECT email, 'ROLE_COMPANY' AS role FROM company" +
+//                        ") AS roles WHERE email = ?");
+//
+//        return userDetailsManager;
+//    }
+//
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(jdbcUserDetailsManager());
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -112,7 +112,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF for testing purposes
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/").permitAll()
+                        .requestMatchers("/login", "/", "/signup", "/signup/**").permitAll() // Allow login and signup pages
+                        .requestMatchers("/api/v1/auth/**").permitAll() // Allow auth endpoints (signup, check-email)
+                        .requestMatchers("/api/v1/**").permitAll() // Allow all REST API endpoints (for testing)
+                        .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll() // Allow Swagger
                         .requestMatchers("/candidate/**").hasRole("CANDIDATE") // ROLE_CANDIDATE
                         .requestMatchers("/company/**").hasRole("COMPANY") // ROLE_COMPANY
                         .anyRequest().authenticated()

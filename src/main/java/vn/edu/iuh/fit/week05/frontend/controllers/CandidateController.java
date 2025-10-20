@@ -11,13 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.week05.backend.models.*;
-import vn.edu.iuh.fit.week05.backend.repositories.CandidateRepository;
 import vn.edu.iuh.fit.week05.backend.services.*;
 import vn.edu.iuh.fit.week05.frontend.utils.Greeting;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -34,6 +33,8 @@ public class CandidateController {
     private CandidateSkillService candidateSkillService;
     @Autowired
     private SkillService skillService;
+    @Autowired
+    private vn.edu.iuh.fit.week05.backend.services.FileStorageService fileStorageService;
 
 
     @GetMapping("/home")
@@ -236,9 +237,77 @@ public class CandidateController {
         return "/candidate/skill-suggestions"; // Trang hiển thị danh sách kỹ năng và công việc
     }
 
+    @GetMapping("/profile")
+    public String viewProfile(HttpSession session, Model model) {
+        Candidate candidate = (Candidate) session.getAttribute("user");
+        if (candidate == null) {
+            return "redirect:/login";
+        }
+        
+        // Refresh candidate data from database
+        Candidate refreshedCandidate = candidateService.findById(candidate.getId());
+        model.addAttribute("candidate", refreshedCandidate);
+        
+        // Get candidate skills
+        List<CandidateSkill> skills = candidateSkillService.findCandidateSkillByCandidateId(refreshedCandidate.getId());
+        model.addAttribute("skills", skills);
+        
+        return "candidate/profile";
+    }
 
+    @PostMapping("/update-profile")
+    public String updateProfile(
+            HttpSession session,
+            @RequestParam String fullName,
+            @RequestParam String phone,
+            @RequestParam String dob,
+            @RequestParam(required = false) String password,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+            RedirectAttributes redirectAttributes) {
+        
+        Candidate candidate = (Candidate) session.getAttribute("user");
+        if (candidate == null) {
+            return "redirect:/login";
+        }
 
+        try {
+            Candidate updatedCandidate = candidateService.findById(candidate.getId());
+            updatedCandidate.setFullName(fullName);
+            updatedCandidate.setPhone(phone);
+            updatedCandidate.setDob(java.time.LocalDate.parse(dob));
+            
+            // Handle avatar upload
+            if (avatar != null && !avatar.isEmpty()) {
+                // Delete old avatar if exists
+                if (updatedCandidate.getAvatarUrl() != null) {
+                    fileStorageService.deleteFile(updatedCandidate.getAvatarUrl());
+                }
+                // Store new avatar
+                String avatarUrl = fileStorageService.storeFile(avatar);
+                updatedCandidate.setAvatarUrl(avatarUrl);
+            }
+            
+            // Update password only if provided; ensure null when blank to avoid accidental updates
+            if (password != null && !password.trim().isEmpty()) {
+                updatedCandidate.setPassword(password);
+            } else {
+                updatedCandidate.setPassword(null);
+            }
+            
+            Candidate saved = candidateService.updateCandidate(candidate.getId(), updatedCandidate);
+            
+            // Update session with fresh entity from DB
+            session.setAttribute("user", saved);
+            
+            redirectAttributes.addFlashAttribute("message", "Profile updated successfully!");
+            redirectAttributes.addFlashAttribute("messageType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error updating profile: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("messageType", "error");
+        }
 
+        return "redirect:/candidate/profile";
+    }
 
 }
 

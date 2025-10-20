@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${job.name} + ' - Job Detail'">Job Detail</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/modern-theme.css}" />
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="~{header :: header}"></div>
+
+    <div class="container mt-5">
+      <!-- Alert messages -->
+      <div
+        th:if="${success}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <div
+        th:if="${error}"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Job Detail Card -->
+      <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+              <i class="fas fa-briefcase me-2"></i>
+              <span th:text="${job.name}">Job Title</span>
+            </h2>
+            <a
+              th:if="${isCandidate}"
+              href="/candidate/home"
+              class="btn btn-light"
+            >
+              <i class="fas fa-arrow-left me-2"></i>Back to Jobs
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Company Information -->
+          <div class="mb-4">
+            <h5 class="text-muted mb-3">
+              <i class="fas fa-building me-2"></i>Company Information
+            </h5>
+            <div class="row">
+              <div class="col-md-6">
+                <p>
+                  <strong>Company:</strong>
+                  <span th:text="${job.company.name}">Company Name</span>
+                </p>
+                <p>
+                  <strong>Email:</strong>
+                  <span th:text="${job.company.email}">email@company.com</span>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p>
+                  <strong>Phone:</strong>
+                  <span th:text="${job.company.phone}">+84 123 456 789</span>
+                </p>
+                <p th:if="${job.company.webUrl}">
+                  <strong>Website:</strong>
+                  <a
+                    th:href="${job.company.webUrl}"
+                    target="_blank"
+                    th:text="${job.company.webUrl}"
+                    >website.com</a
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <!-- Job Description -->
+          <div class="mb-4">
+            <h5 class="text-muted mb-3">
+              <i class="fas fa-file-alt me-2"></i>Job Description
+            </h5>
+            <p class="text-justify" th:text="${job.description}">
+              Job description goes here...
+            </p>
+          </div>
+
+          <hr />
+
+          <!-- Required Skills -->
+          <div class="mb-4">
+            <h5 class="text-muted mb-3">
+              <i class="fas fa-code me-2"></i>Required Skills
+            </h5>
+            <div
+              th:if="${job.jobSkills != null and !job.jobSkills.isEmpty()}"
+              class="row"
+            >
+              <div class="col-md-12">
+                <table class="table table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Skill</th>
+                      <th>Level Required</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="jobSkill : ${job.jobSkills}">
+                      <td>
+                        <span
+                          class="badge bg-info text-dark"
+                          th:text="${jobSkill.skill.skillName}"
+                          >Skill Name</span
+                        >
+                      </td>
+                      <td>
+                        <span
+                          class="badge"
+                          th:classappend="${jobSkill.skillLevel.value == 1} ? 'bg-secondary' : 
+                                                                  (${jobSkill.skillLevel.value == 2} ? 'bg-primary' : 
+                                                                  (${jobSkill.skillLevel.value == 3} ? 'bg-success' : 
+                                                                  (${jobSkill.skillLevel.value == 4} ? 'bg-warning' : 'bg-danger')))"
+                          th:text="${jobSkill.skillLevel.name}"
+                        >
+                          Level
+                        </span>
+                      </td>
+                      <td th:text="${jobSkill.moreInfos ?: 'N/A'}">
+                        Additional information
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div
+              th:if="${job.jobSkills == null or job.jobSkills.isEmpty()}"
+              class="alert alert-info"
+            >
+              <i class="fas fa-info-circle me-2"></i>No specific skills required
+              for this job.
+            </div>
+          </div>
+
+          <hr />
+
+          <!-- Apply Section (Only for Candidates) -->
+          <div th:if="${isCandidate}" class="mt-4">
+            <!-- If already applied -->
+            <div
+              th:if="${hasApplied and application != null}"
+              class="alert alert-warning"
+            >
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="fas fa-check-circle me-2"></i>
+                  <strong>You have already applied for this job</strong>
+                  <p class="mb-0 mt-2" th:if="${application.status != null}">
+                    Status:
+                    <span
+                      class="badge"
+                      th:classappend="${application.status.name() == 'PENDING'} ? 'bg-warning' : 
+                                                          (${application.status.name() == 'REVIEWING'} ? 'bg-info' : 
+                                                          (${application.status.name() == 'ACCEPTED'} ? 'bg-success' : 
+                                                          (${application.status.name() == 'REJECTED'} ? 'bg-danger' : 'bg-secondary')))"
+                      th:text="${application.status}"
+                    >
+                      Status
+                    </span>
+                  </p>
+                  <p
+                    class="mb-0 text-muted"
+                    th:if="${application.createdDate != null}"
+                  >
+                    Applied on:
+                    <span
+                      th:text="${#temporals.format(application.createdDate, 'dd-MM-yyyy HH:mm')}"
+                      >Date</span
+                    >
+                  </p>
+                </div>
+                <div
+                  th:if="${application.status != null and (application.status.name() == 'PENDING' or application.status.name() == 'REVIEWING')}"
+                >
+                  <form
+                    th:action="@{/applications/{id}/withdraw(id=${application.id})}"
+                    method="post"
+                    onsubmit="return confirm('Are you sure you want to withdraw this application?');"
+                  >
+                    <button type="submit" class="btn btn-danger">
+                      <i class="fas fa-times me-2"></i>Withdraw Application
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Apply button -->
+            <div th:unless="${hasApplied}">
+              <form th:action="@{/applications/apply}" method="post">
+                <input type="hidden" name="jobId" th:value="${job.id}" />
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                  <i class="fas fa-paper-plane me-2"></i>Apply for this Job
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Message for non-candidates -->
+          <div th:unless="${isCandidate}" class="alert alert-info mt-4">
+            <i class="fas fa-info-circle me-2"></i>
+            Please <a href="/login">login as a candidate</a> to apply for this
+            job.
+          </div>
+        </div>
+
+        <div class="card-footer text-muted">
+          <small>
+            <i class="fas fa-info-circle me-2"></i>
+            Make sure your skills match the requirements before applying.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

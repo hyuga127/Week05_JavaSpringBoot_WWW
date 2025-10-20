@@ -16,6 +16,7 @@ import java.util.List;
 @Table(name = "skill", schema = "works")
 public class Skill {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id", nullable = false)
     private Long id;
 

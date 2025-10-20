@@ -30,92 +30,229 @@
       .content {
         flex: 1;
       }
+      .avatar-preview-container {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .avatar-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #667eea;
+        margin: 0 auto 1rem;
+        display: block;
+      }
+      .avatar-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: white;
+        margin: 0 auto 1rem;
+        border: 3px solid #667eea;
+      }
+      .profile-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
     </style>
   </head>
   <body>
     <div class="wrapper">
       <header th:replace="~{header :: header}"></header>
       <div class="container-90 mt-4 content">
-        <h1 class="mb-4">Edit Candidate Profile</h1>
+        <h1 class="mb-4 text-center">
+          <i class="fas fa-user-edit me-2"></i>Edit Candidate Profile
+        </h1>
 
-        <form action="/candidate/update" method="post">
-          <div class="mb-3">
-            <label for="fullName" class="form-label">Full Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="fullName"
-              name="fullName"
-              th:value="${candidate.fullName}"
-              required
-            />
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="profile-card">
+              <!-- Flash Messages -->
+              <div
+                th:if="${message}"
+                th:class="'alert alert-' + ${messageType == 'success' ? 'success' : 'danger'}"
+                role="alert"
+              >
+                <span th:text="${message}"></span>
+              </div>
+
+              <!-- Avatar Preview -->
+              <div class="avatar-preview-container">
+                <div th:if="${candidate.avatarUrl != null}">
+                  <img
+                    th:src="${candidate.avatarUrl}"
+                    alt="Current Avatar"
+                    class="avatar-preview"
+                    id="avatarPreview"
+                  />
+                </div>
+                <div
+                  th:if="${candidate.avatarUrl == null}"
+                  class="avatar-placeholder"
+                  id="avatarPlaceholder"
+                >
+                  <i class="fas fa-user"></i>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  onclick="document.getElementById('avatarInput').click()"
+                >
+                  <i class="fas fa-camera me-2"></i>Change Avatar
+                </button>
+              </div>
+
+              <form
+                action="/candidate/update-profile"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <!-- Hidden Avatar Input -->
+                <input
+                  type="file"
+                  id="avatarInput"
+                  name="avatar"
+                  accept="image/*"
+                  style="display: none"
+                  onchange="previewAvatar(this)"
+                />
+
+                <div class="mb-3">
+                  <label for="fullName" class="form-label">
+                    <i class="fas fa-user me-2"></i>Full Name
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullName"
+                    name="fullName"
+                    th:value="${candidate.fullName}"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">
+                    <i class="fas fa-envelope me-2"></i>Email
+                  </label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    th:value="${candidate.email}"
+                    disabled
+                  />
+                  <small class="text-muted">Email cannot be changed</small>
+                </div>
+
+                <div class="mb-3">
+                  <label for="phone" class="form-label">
+                    <i class="fas fa-phone me-2"></i>Phone
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="phone"
+                    name="phone"
+                    th:value="${candidate.phone}"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="dob" class="form-label">
+                    <i class="fas fa-birthday-cake me-2"></i>Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="dob"
+                    name="dob"
+                    th:value="${candidate.dob}"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="password" class="form-label">
+                    <i class="fas fa-lock me-2"></i>New Password
+                    <small class="text-muted"
+                      >(Leave blank to keep current)</small
+                    >
+                  </label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    placeholder="Enter new password (optional)"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="address" class="form-label">
+                    <i class="fas fa-map-marker-alt me-2"></i>Address
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    name="address"
+                    th:value="${candidate.address.street + ', ' + candidate.address.city + ', ' + candidate.address.country}"
+                    disabled
+                  />
+                  <small class="text-muted"
+                    >Address cannot be changed here</small
+                  >
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                  <a href="/candidate/profile" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Cancel
+                  </a>
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              name="email"
-              th:value="${candidate.email}"
-              disabled
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input
-              type="text"
-              class="form-control"
-              id="phone"
-              name="phone"
-              th:value="${candidate.phone}"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="dob" class="form-label">Date of Birth</label>
-            <input
-              type="date"
-              class="form-control"
-              id="dob"
-              name="dob"
-              th:value="${candidate.dob}"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <input
-              type="text"
-              class="form-control"
-              id="address"
-              name="address"
-              th:value="${candidate.address.country.name}"
-              disabled
-              required
-            />
-          </div>
-
-          <!--            <div class="mb-3">-->
-          <!--                <label for="skills" class="form-label">Skills</label>-->
-          <!--                <div th:each="skill : ${candidate.skills}" class="mb-2">-->
-          <!--                    <input type="text" class="form-control mb-1" name="skills[__${skill.skillId}__].skillName"-->
-          <!--                           th:value="${skill.skillName}" placeholder="Skill Name">-->
-          <!--                    <input type="number" class="form-control mb-1" name="skills[__${skill.skillId}__].skillLevel"-->
-          <!--                           th:value="${skill.skillLevel}" placeholder="Skill Level">-->
-          <!--                    <textarea class="form-control" name="skills[__${skill.skillId}__].moreInfos"-->
-          <!--                              placeholder="Additional Information" th:text="${skill.moreInfos}"></textarea>-->
-          <!--                </div>-->
-          <!--            </div>-->
-
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
+        </div>
       </div>
       <footer th:replace="~{footer :: footer}"></footer>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function previewAvatar(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const preview = document.getElementById("avatarPreview");
+            const placeholder = document.getElementById("avatarPlaceholder");
+
+            if (preview) {
+              preview.src = e.target.result;
+            } else if (placeholder) {
+              // Replace placeholder with image
+              placeholder.outerHTML =
+                '<img src="' +
+                e.target.result +
+                '" alt="Avatar Preview" class="avatar-preview" id="avatarPreview" />';
+            }
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+    </script>
   </body>
 </html>

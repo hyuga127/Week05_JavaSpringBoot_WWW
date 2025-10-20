@@ -34,5 +34,7 @@ public class JobSkill {
     private SkillLevel skillLevel;
 
 
+    public JobSkill(JobSkillId jobSkillId) {
 
+    }
 }

@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.week05.backend.models.*;
 import vn.edu.iuh.fit.week05.backend.repositories.JobRepository;
+import vn.edu.iuh.fit.week05.backend.services.ApplicationService;
 import vn.edu.iuh.fit.week05.backend.services.JobService;
 import vn.edu.iuh.fit.week05.backend.services.JobSkillService;
 import vn.edu.iuh.fit.week05.backend.services.SkillService;
@@ -31,6 +30,8 @@ public class CompanyController {
     private SkillService skillService;
     @Autowired
     private JobSkillService jobSkillService;
+    @Autowired
+    private ApplicationService applicationService;
 
 
     public CompanyController(JobRepository jobRepository) {
@@ -218,10 +219,64 @@ public class CompanyController {
         return "redirect:/company/home";
     }
 
+    /**
+     * Xem danh sách ứng viên đã apply cho một job
+     * GET /company/job/{jobId}/applicants
+     */
+    @GetMapping("/job/{jobId}/applicants")
+    public String viewJobApplicants(@PathVariable Long jobId, HttpSession session, Model model) {
+        Company company = (Company) session.getAttribute("user");
+        if (company == null) {
+            return "redirect:/login";
+        }
 
+        // Kiểm tra job có thuộc về company này không
+        Job job = jobService.getJobById(jobId);
+        if (job == null || !job.getCompany().getId().equals(company.getId())) {
+            model.addAttribute("error", "Job not found or you don't have permission to view applicants");
+            return "redirect:/company/home";
+        }
 
+        // Lấy danh sách applications cho job này
+        List<Application> applications = applicationService.getJobApplications(jobId);
 
+        // Lấy thống kê
+        Map<ApplicationStatus, Long> statistics = applicationService.getJobStatistics(jobId);
+        long totalApplications = applicationService.countJobApplications(jobId);
 
+        model.addAttribute("company", company);
+        model.addAttribute("job", job);
+        model.addAttribute("applications", applications);
+        model.addAttribute("statistics", statistics);
+        model.addAttribute("totalApplications", totalApplications);
+        model.addAttribute("statuses", ApplicationStatus.values());
 
+        return "company/job-applicants";
+    }
+
+    /**
+     * Xem tất cả applications của company
+     * GET /company/applications
+     */
+    @GetMapping("/applications")
+    public String viewAllApplications(HttpSession session, Model model) {
+        Company company = (Company) session.getAttribute("user");
+        if (company == null) {
+            return "redirect:/login";
+        }
+
+        // Lấy danh sách tất cả applications của company
+        List<Application> applications = applicationService.getCompanyApplications(company.getId());
+
+        // Lấy thống kê
+        Map<ApplicationStatus, Long> statistics = applicationService.getCompanyStatistics(company.getId());
+
+        model.addAttribute("company", company);
+        model.addAttribute("applications", applications);
+        model.addAttribute("statistics", statistics);
+        model.addAttribute("statuses", ApplicationStatus.values());
+
+        return "company/applications";
+    }
 
 }

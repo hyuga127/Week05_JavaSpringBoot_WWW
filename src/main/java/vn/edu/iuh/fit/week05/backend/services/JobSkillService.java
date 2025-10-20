@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.edu.iuh.fit.week05.backend.models.JobSkill;
+import vn.edu.iuh.fit.week05.backend.models.JobSkillId;
 import vn.edu.iuh.fit.week05.backend.repositories.JobSkillRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobSkillService {
@@ -36,5 +38,9 @@ public class JobSkillService {
             throw new RuntimeException("No JobSkills found for Job ID: " + jobId);
         }
         return jobSkills;
+    }
+
+    public Optional<JobSkill> findById(JobSkillId id) {
+        return jobSkillRepository.findById(id);
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 @Table(name = "company", schema = "works")
 public class Company implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comp_id", nullable = false)
     private Long id;
 

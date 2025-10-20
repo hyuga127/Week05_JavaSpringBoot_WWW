@@ -28,11 +28,9 @@ public class CandidateSkillService {
     }
 
     public List<CandidateSkill> findCandidateSkillByCandidateId(Long candidateId) {
-        List<CandidateSkill> candidateSkills = candidateSkillRepository.findCandidateSkillByCandidateId(candidateId);
-        if (candidateSkills.isEmpty()) {
-            throw new RuntimeException("No CandidateSkills found for Candidate ID: " + candidateId);
-        }
-        return candidateSkills;
+        // Return an empty list when the candidate has no skills instead of throwing,
+        // so newly registered candidates can access profile/update pages without errors.
+        return candidateSkillRepository.findCandidateSkillByCandidateId(candidateId);
     }
 
     // Cập nhật kỹ năng cũ

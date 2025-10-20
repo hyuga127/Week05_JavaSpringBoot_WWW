@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.edu.iuh.fit.week05.backend.models.Job;
-import vn.edu.iuh.fit.week05.backend.models.Skill;
 
 import java.util.List;
 
@@ -34,4 +33,18 @@ public interface JobRepository extends JpaRepository<Job, Long> {
                 WHERE js.id.skillId = :skillId
             """)
     List<Job> getJobBySkill(@Param("skillId") Long skillId);
+
+    /**
+     * Find job by ID with EAGER fetch for company and jobSkills
+     * This is used for job detail page to avoid LazyInitializationException
+     */
+    @Query("""
+                SELECT j
+                FROM Job j
+                LEFT JOIN FETCH j.company
+                LEFT JOIN FETCH j.jobSkills js
+                LEFT JOIN FETCH js.skill
+                WHERE j.id = :id
+            """)
+    Job findByIdWithDetails(@Param("id") Long id);
 }

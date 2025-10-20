@@ -408,21 +408,31 @@
             <div class="stat-icon success">
               <i class="fas fa-user-check"></i>
             </div>
-            <div class="stat-value">45</div>
+            <div class="stat-value" th:text="${totalApplications}">0</div>
             <div class="stat-label">Total Applicants</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon warning">
               <i class="fas fa-clock"></i>
             </div>
-            <div class="stat-value">12</div>
+            <div
+              class="stat-value"
+              th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).PENDING)}"
+            >
+              0
+            </div>
             <div class="stat-label">Pending Reviews</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon info">
               <i class="fas fa-chart-line"></i>
             </div>
-            <div class="stat-value">89%</div>
+            <div
+              class="stat-value"
+              th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REVIEWING)}"
+            >
+              0
+            </div>
             <div class="stat-label">Fill Rate</div>
           </div>
         </div>
@@ -463,17 +473,16 @@
                     </td>
                     <td>
                       <a
+                        th:href="@{'/company/job/' + ${job.id} + '/applicants'}"
+                        class="btn btn-info-modern btn-sm-modern"
+                      >
+                        <i class="fas fa-users"></i> Applicants
+                      </a>
+                      <a
                         th:href="@{'/company/edit-job/' + ${job.id}}"
                         class="btn btn-warning-modern btn-sm-modern"
                       >
                         <i class="fas fa-edit"></i> Edit
-                      </a>
-                      <a
-                        th:href="@{'/company/delete-job/' + ${job.id}}"
-                        class="btn btn-danger-modern btn-sm-modern"
-                        onclick="return confirm('Are you sure you want to delete this job?');"
-                      >
-                        <i class="fas fa-trash"></i> Delete
                       </a>
                     </td>
                   </tr>
@@ -548,11 +557,11 @@
                 <span>Post New Job</span>
               </a>
               <a
-                href="/api/company/job-applicants"
+                href="/company/applications"
                 class="action-btn btn-secondary-modern w-100"
               >
                 <i class="fas fa-users"></i>
-                <span>View Applicants</span>
+                <span>View All Applicants</span>
               </a>
             </div>
 

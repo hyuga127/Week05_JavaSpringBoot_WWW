@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Applications</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/modern-theme.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="~{header :: header}"></div>
+
+    <div class="container mt-5">
+      <!-- Page Title -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          <i class="fas fa-file-alt me-2"></i>
+          My Applications
+        </h2>
+        <a href="/candidate/home" class="btn btn-secondary">
+          <i class="fas fa-arrow-left me-2"></i>Back to Home
+        </a>
+      </div>
+
+      <!-- Alert messages -->
+      <div
+        th:if="${success}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <div
+        th:if="${error}"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Statistics Section -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">
+                <i class="fas fa-chart-pie me-2"></i>Application Statistics
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-light">
+                    <h3 class="text-primary" th:text="${totalApplications}">
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Total</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-warning bg-opacity-10">
+                    <h3
+                      class="text-warning"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).PENDING)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Pending</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-info bg-opacity-10">
+                    <h3
+                      class="text-info"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REVIEWING)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Reviewing</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-success bg-opacity-10">
+                    <h3
+                      class="text-success"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).ACCEPTED)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Accepted</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-danger bg-opacity-10">
+                    <h3
+                      class="text-danger"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REJECTED)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Rejected</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-secondary bg-opacity-10">
+                    <h3
+                      class="text-secondary"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).WITHDRAWN)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Withdrawn</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chart -->
+              <div class="row mt-4">
+                <div class="col-md-6 offset-md-3">
+                  <canvas id="applicationChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications List -->
+      <div class="card shadow">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Application History
+          </h5>
+        </div>
+        <div class="card-body">
+          <div
+            th:if="${applications == null or applications.isEmpty()}"
+            class="alert alert-info"
+          >
+            <i class="fas fa-info-circle me-2"></i>
+            You haven't applied for any jobs yet.
+            <a href="/candidate/home" class="alert-link"
+              >Browse available jobs</a
+            >
+          </div>
+
+          <div
+            th:unless="${applications == null or applications.isEmpty()}"
+            class="table-responsive"
+          >
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Job Title</th>
+                  <th>Company</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="app, iterStat : ${applications}">
+                  <td th:text="${iterStat.count}">1</td>
+                  <td>
+                    <a
+                      th:href="@{/job/{id}(id=${app.job.id})}"
+                      th:text="${app.job.name}"
+                      class="text-decoration-none"
+                    >
+                      Job Title
+                    </a>
+                  </td>
+                  <td th:text="${app.job.company.name}">Company Name</td>
+                  <td
+                    th:text="${#temporals.format(app.createdDate, 'dd-MM-yyyy HH:mm')}"
+                  >
+                    Date
+                  </td>
+                  <td>
+                    <span
+                      class="badge"
+                      th:classappend="${app.status.name() == 'PENDING'} ? 'bg-warning' : 
+                                                          (${app.status.name() == 'REVIEWING'} ? 'bg-info' : 
+                                                          (${app.status.name() == 'ACCEPTED'} ? 'bg-success' : 
+                                                          (${app.status.name() == 'REJECTED'} ? 'bg-danger' : 'bg-secondary')))"
+                      th:text="${app.status}"
+                    >
+                      Status
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      th:href="@{/job/{id}(id=${app.job.id})}"
+                      class="btn btn-sm btn-outline-primary me-1"
+                      title="View Job"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <form
+                      th:if="${app.status.name() == 'PENDING' or app.status.name() == 'REVIEWING'}"
+                      th:action="@{/applications/{id}/withdraw(id=${app.id})}"
+                      method="post"
+                      class="d-inline"
+                      onsubmit="return confirm('Are you sure you want to withdraw this application?');"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-danger"
+                        title="Withdraw Application"
+                      >
+                        <i class="fas fa-times"></i> Withdraw
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+      // Chart.js for application statistics
+      const ctx = document.getElementById("applicationChart");
+
+      const pending = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).PENDING)}]]*/ 0;
+      const reviewing = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REVIEWING)}]]*/ 0;
+      const accepted = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).ACCEPTED)}]]*/ 0;
+      const rejected = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REJECTED)}]]*/ 0;
+      const withdrawn = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).WITHDRAWN)}]]*/ 0;
+
+      new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: ["Pending", "Reviewing", "Accepted", "Rejected", "Withdrawn"],
+          datasets: [
+            {
+              label: "Applications",
+              data: [pending, reviewing, accepted, rejected, withdrawn],
+              backgroundColor: [
+                "rgba(255, 193, 7, 0.8)", // Warning - Pending
+                "rgba(13, 202, 240, 0.8)", // Info - Reviewing
+                "rgba(25, 135, 84, 0.8)", // Success - Accepted
+                "rgba(220, 53, 69, 0.8)", // Danger - Rejected
+                "rgba(108, 117, 125, 0.8)", // Secondary - Withdrawn
+              ],
+              borderColor: [
+                "rgba(255, 193, 7, 1)",
+                "rgba(13, 202, 240, 1)",
+                "rgba(25, 135, 84, 1)",
+                "rgba(220, 53, 69, 1)",
+                "rgba(108, 117, 125, 1)",
+              ],
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+            title: {
+              display: true,
+              text: "Application Status Distribution",
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

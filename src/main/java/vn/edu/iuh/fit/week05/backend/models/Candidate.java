@@ -39,8 +39,8 @@ public class Candidate implements UserDetails {
     @Column(name = "phone", nullable = false, length = 15)
     private String phone;
 
-    @Column(name = "role", nullable = false)
-    private String role = "ROLE_CANDIDATE";
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "address", nullable = false)

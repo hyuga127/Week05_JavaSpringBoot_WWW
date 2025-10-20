@@ -34,4 +34,19 @@ public class LoginController {
     public String accessDenied() {
         return "access-denied";
     }
+
+    @GetMapping("/signup")
+    public String signupChoice() {
+        return "signup-choice";
+    }
+
+    @GetMapping("/signup/candidate")
+    public String signupCandidate() {
+        return "signup-candidate";
+    }
+
+    @GetMapping("/signup/company")
+    public String signupCompany() {
+        return "signup-company";
+    }
 }

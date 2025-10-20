@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Applications - Company Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/modern-theme.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <div th:replace="~{header :: header}"></div>
+
+    <div class="container mt-5">
+      <!-- Page Title -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          <i class="fas fa-users me-2"></i>
+          All Applications
+        </h2>
+        <a href="/company/home" class="btn btn-secondary">
+          <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+      </div>
+
+      <!-- Alert messages -->
+      <div
+        th:if="${success}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <div
+        th:if="${error}"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Statistics Section -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">
+                <i class="fas fa-chart-bar me-2"></i>Overall Application
+                Statistics
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row text-center">
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-light">
+                    <h3 class="text-primary" th:text="${applications.size()}">
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Total</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-warning bg-opacity-10">
+                    <h3
+                      class="text-warning"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).PENDING)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Pending</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-info bg-opacity-10">
+                    <h3
+                      class="text-info"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REVIEWING)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Reviewing</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-success bg-opacity-10">
+                    <h3
+                      class="text-success"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).ACCEPTED)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Accepted</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-danger bg-opacity-10">
+                    <h3
+                      class="text-danger"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REJECTED)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Rejected</p>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="border rounded p-3 bg-secondary bg-opacity-10">
+                    <h3
+                      class="text-secondary"
+                      th:text="${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).WITHDRAWN)}"
+                    >
+                      0
+                    </h3>
+                    <p class="mb-0 text-muted">Withdrawn</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chart -->
+              <div class="row mt-4">
+                <div class="col-md-6 offset-md-3">
+                  <canvas id="applicationChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications List -->
+      <div class="card shadow">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>All Applications Across Jobs
+          </h5>
+        </div>
+        <div class="card-body">
+          <div
+            th:if="${applications == null or applications.isEmpty()}"
+            class="alert alert-info"
+          >
+            <i class="fas fa-info-circle me-2"></i>
+            No applications received yet.
+          </div>
+
+          <div
+            th:unless="${applications == null or applications.isEmpty()}"
+            class="table-responsive"
+          >
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Job Title</th>
+                  <th>Candidate</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="app, iterStat : ${applications}">
+                  <td th:text="${iterStat.count}">1</td>
+                  <td>
+                    <a
+                      th:href="@{'/company/job/' + ${app.job.id} + '/applicants'}"
+                      class="text-decoration-none fw-bold"
+                      th:text="${app.job.name}"
+                    >
+                      Job Title
+                    </a>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img
+                        th:if="${app.candidate.avatarUrl}"
+                        th:src="@{/uploads/avatars/{filename}(filename=${app.candidate.avatarUrl})}"
+                        alt="Avatar"
+                        class="rounded-circle me-2"
+                        style="width: 40px; height: 40px; object-fit: cover"
+                      />
+                      <i
+                        th:unless="${app.candidate.avatarUrl}"
+                        class="fas fa-user-circle fa-2x me-2 text-muted"
+                      ></i>
+                      <span th:text="${app.candidate.fullName}"
+                        >Candidate Name</span
+                      >
+                    </div>
+                  </td>
+                  <td th:text="${app.candidate.email}">email@example.com</td>
+                  <td th:text="${app.candidate.phone}">+84 123 456 789</td>
+                  <td
+                    th:text="${#temporals.format(app.createdDate, 'dd-MM-yyyy HH:mm')}"
+                  >
+                    Date
+                  </td>
+                  <td>
+                    <span
+                      class="badge"
+                      th:classappend="${app.status.name() == 'PENDING'} ? 'bg-warning' : 
+                                                          (${app.status.name() == 'REVIEWING'} ? 'bg-info' : 
+                                                          (${app.status.name() == 'ACCEPTED'} ? 'bg-success' : 
+                                                          (${app.status.name() == 'REJECTED'} ? 'bg-danger' : 'bg-secondary')))"
+                      th:text="${app.status}"
+                    >
+                      Status
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      th:href="@{'/company/job/' + ${app.job.id} + '/applicants'}"
+                      class="btn btn-sm btn-outline-primary"
+                      title="View Job Applications"
+                    >
+                      <i class="fas fa-eye"></i> View Job
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+      // Chart.js for application statistics
+      const ctx = document.getElementById("applicationChart");
+
+      const pending = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).PENDING)}]]*/ 0;
+      const reviewing = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REVIEWING)}]]*/ 0;
+      const accepted = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).ACCEPTED)}]]*/ 0;
+      const rejected = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).REJECTED)}]]*/ 0;
+      const withdrawn = /*[[${statistics.get(T(vn.edu.iuh.fit.week05.backend.models.ApplicationStatus).WITHDRAWN)}]]*/ 0;
+
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Pending", "Reviewing", "Accepted", "Rejected", "Withdrawn"],
+          datasets: [
+            {
+              label: "Applications",
+              data: [pending, reviewing, accepted, rejected, withdrawn],
+              backgroundColor: [
+                "rgba(255, 193, 7, 0.8)", // Warning - Pending
+                "rgba(13, 202, 240, 0.8)", // Info - Reviewing
+                "rgba(25, 135, 84, 0.8)", // Success - Accepted
+                "rgba(220, 53, 69, 0.8)", // Danger - Rejected
+                "rgba(108, 117, 125, 0.8)", // Secondary - Withdrawn
+              ],
+              borderColor: [
+                "rgba(255, 193, 7, 1)",
+                "rgba(13, 202, 240, 1)",
+                "rgba(25, 135, 84, 1)",
+                "rgba(220, 53, 69, 1)",
+                "rgba(108, 117, 125, 1)",
+              ],
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+            title: {
+              display: true,
+              text: "Applications Distribution Across All Jobs",
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
